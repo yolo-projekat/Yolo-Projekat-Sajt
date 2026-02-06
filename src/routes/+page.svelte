@@ -17,6 +17,12 @@
 			tech: 'Python, YOLOv8, OpenCV',
 			desc: 'Multithreaded sistem za detekciju objekata i automatsko praćenje (Banana Tracker).',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Python'
+		},
+		{
+			title: 'Ovaj Sajt',
+			tech: 'Svelte',
+			desc: 'Moderan sajt napravljen u Svelte JS framework-u',
+			link: 'https://yolo-projekat.github.io/Yolo-Projekat-Sajt/'
 		}
 	];
 </script>
