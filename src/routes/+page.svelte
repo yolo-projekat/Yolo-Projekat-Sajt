@@ -21,8 +21,14 @@
 		{
 			title: 'Ovaj Sajt',
 			tech: 'Svelte',
-			desc: 'Moderan sajt napravljen u Svelte JS framework-u',
-			link: 'https://yolo-projekat.github.io/Yolo-Projekat-Sajt/'
+			desc: 'Moderan sajt napravljen u Svelte JS framework-u.',
+			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Sajt'
+		},
+		{
+			title: 'Kontrolni Server',
+			tech: 'python, systemd',
+			desc: 'Fajlovi za server, koji se nalaze na Rassbery Pi platformi.',
+			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Raspberry-Pi'
 		}
 	];
 </script>
