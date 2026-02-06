@@ -1,43 +1,56 @@
-# sv
+# 🚗 YOLO Projekat - Veb Portal
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+[![Svelte](https://img.shields.io/badge/Framework-SvelteKit-ff3e00.svg)](https://kit.svelte.dev/)
+[![Deploy](https://img.shields.io/badge/Deploy-GitHub_Pages-blue.svg)](https://pages.github.com/)
+[![Hardware](https://img.shields.io/badge/Hardware-Raspberry_Pi_5-c51a4a.svg)](https://www.raspberrypi.com/)
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv create --template minimal --types jsdoc --add prettier --install npm .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Ovaj repozitorijum sadrži izvorni kod za zvaničnu prezentaciju **YOLO Projekta**. Sajt služi kao centralno mesto za dokumentaciju, tehničke specifikacije i linkove ka svim podsistemima (Windows, Android i Python).
 
 
-```sh
-npm run dev
 
-# or start the server and open the app in a new browser tab
+---
+
+## ✨ Pregled Sistema
+
+Projekat se bazira na **N1 stepenu autonomije** i koristi **Raspberry Pi 5** za procesiranje podataka u realnom vremenu. Sistem je podeljen na tri ključne celine:
+
+1.  **Windows Desktop App:** Razvijen u WinUI 3, služi kao komandni centar.
+2.  **Android App:** Jetpack Compose aplikacija za mobilnu kontrolu i AI praćenje.
+3.  **Python Engine:** Jezgro sistema koje pokreće YOLOv8/v11 modele i upravlja WebSocket komunikacijom.
+
+---
+
+## 🛠 Tehničke Specifikacije
+
+| Komponenta | Tehnologija |
+| :--- | :--- |
+| **Veb Sajt** | SvelteKit + TailwindCSS (Static Gen) |
+| **AI Inferenca** | ONNX Runtime & Google ML Kit |
+| **Komunikacija** | WebSockets (TCP 1606) |
+| **Video Stream** | HTTP Multipart (TCP 1607) |
+| **OS Vozila** | Raspberry Pi OS (Bookworm) |
+
+---
+
+## 🚀 Instalacija i Razvoj
+
+Ako želite lokalno da pokrenete ovaj portal:
+
+1. **Klonirajte repozitorijum:**
+   ```bash
+   git clone https://github.com/yolo-projekat/Yolo-Projekat-Sajt/edit/main/README.md
+Instalirajte zavisnosti:
+
+Bash
+npm install
+Pokrenite razvojni server:
+
+Bash
 npm run dev -- --open
-```
+🌐 Deployment
+Sajt se automatski hostuje putem GitHub Actions na GitHub Pages. Svaki push na main granu automatski pokreće build proces i osvežava sajt.
 
-## Building
+Autor: Danilo Stoletovic
+Škola: ETŠ „Nikola Tesla“ Niš
 
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Licenca: MIT
