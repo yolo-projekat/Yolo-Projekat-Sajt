@@ -1,56 +1,86 @@
-# 🚗 YOLO Projekat - Veb Portal
+<div align="center">
 
-[![Svelte](https://img.shields.io/badge/Framework-SvelteKit-ff3e00.svg)](https://kit.svelte.dev/)
-[![Deploy](https://img.shields.io/badge/Deploy-GitHub_Pages-blue.svg)](https://pages.github.com/)
-[![Hardware](https://img.shields.io/badge/Hardware-Raspberry_Pi_5-c51a4a.svg)](https://www.raspberrypi.com/)
+# 🌐 YOLO Projekat - Veb Sajt
+### *Centralno čvorište za dokumentaciju i ekosistem podsistema*
 
-Ovaj repozitorijum sadrži izvorni kod za zvaničnu prezentaciju **YOLO Projekta**. Sajt služi kao centralno mesto za dokumentaciju, tehničke specifikacije i linkove ka svim podsistemima (Windows, Android i Python).
-
-
+[![SvelteKit](https://img.shields.io/badge/Framework-SvelteKit-ff3e00?style=for-the-badge&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
+[![TailwindCSS](https://img.shields.io/badge/Styling-Tailwind_CSS-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-22d3ee?style=for-the-badge&logo=github&logoColor=white)](https://pages.github.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-94a3b8?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 ---
 
-## ✨ Pregled Sistema
+<p align="center">
+  <b>Zvanična prezentacija YOLO Projekta</b> služi kao interaktivno mesto za tehničku dokumentaciju. 
+  <br>Sajt objedinjuje specifikacije za Windows, Android i Python klijente, pružajući uvid u <b>N1 stepen autonomije</b> vozila.
+</p>
 
-Projekat se bazira na **N1 stepenu autonomije** i koristi **Raspberry Pi 5** za procesiranje podataka u realnom vremenu. Sistem je podeljen na tri ključne celine:
 
-1.  **Windows Desktop App:** Razvijen u WinUI 3, služi kao komandni centar.
-2.  **Android App:** Jetpack Compose aplikacija za mobilnu kontrolu i AI praćenje.
-3.  **Python Engine:** Jezgro sistema koje pokreće YOLOv8/v11 modele i upravlja WebSocket komunikacijom.
+
+</div>
+
+## 🚀 Pregled Ekosistema
+
+### 📱 Android Aplikacija
+* **Jetpack Compose:** Deklarativni UI za intuitivnu mobilnu kontrolu.
+* **Vision Intelligence:** Integracija Google ML Kit-a za on-device detekciju.
+
+### 🖥️ Windows Desktop
+* **WinUI 3:** Profesionalni komandni panel sa ONNX Runtime inferencom.
+* **OCR System:** Tesseract engine za očitavanje tekstualnih komandi u realnom vremenu.
+
+### 🐍 Python Engine
+* **The Core:** Jezgro sistema koje pokreće YOLOv8 modele.
+* **WebSocket Gateway:** Upravljanje TCP komunikacijom na portu `1606`.
 
 ---
 
 ## 🛠 Tehničke Specifikacije
 
-| Komponenta | Tehnologija |
-| :--- | :--- |
-| **Veb Sajt** | SvelteKit + TailwindCSS (Static Gen) |
-| **AI Inferenca** | ONNX Runtime & Google ML Kit |
-| **Komunikacija** | WebSockets (TCP 1606) |
-| **Video Stream** | HTTP Multipart (TCP 1607) |
-| **OS Vozila** | Raspberry Pi OS (Bookworm) |
+| Komponenta | Tehnologija | Uloga |
+| :--- | :--- | :--- |
+| **Frontend** | SvelteKit | Visokoperformansni Static Site Generation |
+| **Styling** | TailwindCSS | Moderni "Glassmorphism" vizuelni identitet |
+| **Deployment** | GitHub Actions | Automatizovan CI/CD pipeline |
+| **Networking** | TCP 1606 / 1607 | Standardizovani portovi za komande i video |
+| **Hardware** | Raspberry Pi 5 | Glavna procesorska jedinica vozila |
 
 ---
 
-## 🚀 Instalacija i Razvoj
+## 🔧 Instalacija i Lokalni Razvoj
 
-Ako želite lokalno da pokrenete ovaj portal:
+Da biste podigli razvojno okruženje za veb sajt, pratite ove korake:
 
-1. **Klonirajte repozitorijum:**
-   ```bash
-   git clone https://github.com/yolo-projekat/Yolo-Projekat-Sajt/edit/main/README.md
-Instalirajte zavisnosti:
+```bash
+# 1. Kloniranje repozitorijuma
+git clone [https://github.com/yolo-projekat/Yolo-Projekat-Sajt.git](https://github.com/yolo-projekat/Yolo-Projekat-Sajt.git)
 
-Bash
+# 2. Instalacija zavisnosti
 npm install
-Pokrenite razvojni server:
 
-Bash
+# 3. Pokretanje razvojnog servera
 npm run dev -- --open
-🌐 Deployment
-Sajt se automatski hostuje putem GitHub Actions na GitHub Pages. Svaki push na main granu automatski pokreće build proces i osvežava sajt.
+🌐 Cloud Deployment
+Sajt koristi GitHub Pages za hosting. Svaki put kada se kôd pošalje na main granu, pokreće se sledeći proces:
 
-Autor: Danilo Stoletovic
-Škola: ETŠ „Nikola Tesla“ Niš
+Build: SvelteKit generiše statičke fajlove.
 
-Licenca: MIT
+Deploy: GitHub Actions automatski ažurira produkcionu verziju sajta.
+
+🎨 Vizuelni Identitet
+Sajt postavlja standarde za čitav projektni ekosistem:
+
+Primary Color: #38bdf8 (Electric Blue)
+
+Design Philosophy: Fokus na čitljivosti kôda i tehničke dokumentacije.
+
+Responsiveness: Potpuna optimizacija za sve veličine ekrana.
+
+<div align="center">
+
+Autor: Danilo Stoletović  •  Mentor: Dejan Batanjac
+
+
+ETŠ „Nikola Tesla“ Niš • 2026
+
+</div>
