@@ -76,11 +76,7 @@ Design Philosophy: Fokus na čitljivosti kôda i tehničke dokumentacije.
 
 Responsiveness: Potpuna optimizacija za sve veličine ekrana.
 
-<div align="center">
-
 Autor: Danilo Stoletović  •  Mentor: Dejan Batanjac
 
 
 ETŠ „Nikola Tesla“ Niš • 2026
-
-</div>
