@@ -78,7 +78,7 @@
 </section>
 
 <section id="specs" class="section-container">
-    <div class="specs-card">
+    <div class="specs-card glass">
         <div class="specs-header">
             <div class="pulse-icon"></div>
             <h2>Hardverska Arhitektura</h2>
@@ -98,6 +98,12 @@
 </footer>
 
 <style>
+    :global(:root) {
+        --primary: #38bdf8;
+        --bg: #0f172a;
+        --text-dim: #94a3b8;
+    }
+
     .hero {
         height: 90vh;
         display: flex; align-items: center; justify-content: center;
@@ -105,17 +111,10 @@
         background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
     }
 
-    .hero-badge {
-        background: rgba(56, 189, 248, 0.1); color: #38bdf8;
-        padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;
-        font-weight: 700; margin-bottom: 20px; display: inline-block;
-        border: 1px solid rgba(56, 189, 248, 0.2);
-    }
-
     .gradient-text {
         font-size: clamp(2.5rem, 8vw, 5rem);
         font-weight: 900;
-        background: linear-gradient(135deg, #fff 30%, #38bdf8 100%);
+        background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         line-height: 1.1; margin: 0 0 20px 0;
     }
@@ -139,55 +138,74 @@
         gap: 30px;
     }
 
+    /* GLASSMORPHISM KARTICE SA SMALJENIM OSVETLJENJEM */
     .card {
         position: relative;
-        background: linear-gradient(130deg, rgba(56, 189, 248, 0.15) 0%, rgba(30, 41, 59, 0) 100%);
-        border-radius: 28px; padding: 1.5px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 28px;
+        padding: 1px;
+        /* Suptilnija ivica u startu */
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        transition: all 0.4s ease;
     }
 
     .card-inner {
-        background: #0f172a; border-radius: 27px;
-        padding: 35px; height: 100%;
+        background: rgba(30, 41, 59, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 27px;
+        padding: 35px;
+        height: 100%;
         display: flex; flex-direction: column;
+        border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
     .card:hover {
-        transform: translateY(-10px);
-        background: linear-gradient(130deg, rgba(56, 189, 248, 0.5) 0%, rgba(30, 41, 59, 0) 100%);
-        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        transform: translateY(-6px);
+        /* Smanjen intenzitet plave na hoveru (sa 0.5 na 0.25) */
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, transparent 100%);
+        /* Manji, diskretniji shadow */
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
     }
 
     .card-top { display: flex; justify-content: space-between; margin-bottom: 25px; }
     .project-icon { font-size: 2rem; }
+    
     .tech-tag {
-        color: #38bdf8; font-size: 0.65rem; font-weight: 800;
-        padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.1);
+        color: var(--primary); font-size: 0.65rem; font-weight: 800;
+        padding: 6px 12px; border-radius: 8px; 
+        background: rgba(56, 189, 248, 0.05);
+        border: 1px solid rgba(56, 189, 248, 0.15);
     }
 
     .card h3 { font-size: 1.4rem; margin: 0 0 12px 0; color: #f8fafc; }
     .card p { color: #94a3b8; line-height: 1.6; font-size: 0.95rem; margin-bottom: 30px; }
-    .card-link { color: #38bdf8; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-top: auto; }
+    .card-link { color: var(--primary); text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-top: auto; opacity: 0.8; transition: 0.2s; }
+    .card-link:hover { opacity: 1; }
 
+    /* HARDVERSKA KARTICA */
     .specs-card {
-        background: #111a2e; padding: 50px; border-radius: 35px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(17, 26, 46, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 50px; 
+        border-radius: 35px;
+        border: 1px solid rgba(56, 189, 248, 0.1);
     }
 
     .specs-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
     .pulse-icon {
-        width: 12px; height: 12px; background: #38bdf8; border-radius: 50%;
+        width: 10px; height: 10px; background: var(--primary); border-radius: 50%;
         animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+        0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
         70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
         100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
     }
 
     .specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
-    .spec-item strong { display: block; color: var(--primary); margin-bottom: 5px; }
+    .spec-item strong { display: block; color: var(--primary); margin-bottom: 5px; opacity: 0.9; }
 
-    footer { padding: 80px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-dim); }
+    footer { padding: 80px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-dim); font-size: 0.9rem; }
 </style>
