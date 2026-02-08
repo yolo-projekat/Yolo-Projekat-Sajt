@@ -52,6 +52,15 @@ Da biste podigli razvojno okruženje za veb sajt, pratite ove korake:
 ```bash
 # 1. Kloniranje repozitorijuma
 git clone [https://github.com/yolo-projekat/Yolo-Projekat-Sajt.git](https://github.com/yolo-projekat/Yolo-Projekat-Sajt.git)
+##
+---
+<div align="center">
+
+Autor: Danilo Stoletović • Mentor: Dejan Batanjac
+
+ETŠ „Nikola Tesla“ Niš • 2026
+
+</div>
 
 # 2. Instalacija zavisnosti
 npm install
