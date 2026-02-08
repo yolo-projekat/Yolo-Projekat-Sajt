@@ -15,8 +15,6 @@
   <br>Sajt objedinjuje specifikacije za Windows, Android i Python klijente, pružajući uvid u <b>N1 stepen autonomije</b> vozila.
 </p>
 
-
-
 </div>
 
 ## 🚀 Pregled Ekosistema
@@ -60,23 +58,3 @@ npm install
 
 # 3. Pokretanje razvojnog servera
 npm run dev -- --open
-🌐 Cloud Deployment
-Sajt koristi GitHub Pages za hosting. Svaki put kada se kôd pošalje na main granu, pokreće se sledeći proces:
-
-Build: SvelteKit generiše statičke fajlove.
-
-Deploy: GitHub Actions automatski ažurira produkcionu verziju sajta.
-
-🎨 Vizuelni Identitet
-Sajt postavlja standarde za čitav projektni ekosistem:
-
-Primary Color: #38bdf8 (Electric Blue)
-
-Design Philosophy: Fokus na čitljivosti kôda i tehničke dokumentacije.
-
-Responsiveness: Potpuna optimizacija za sve veličine ekrana.
-
-Autor: Danilo Stoletović  •  Mentor: Dejan Batanjac
-
-
-ETŠ „Nikola Tesla“ Niš • 2026
