@@ -32,44 +32,44 @@
 		{
 			title: 'Windows Klijent',
 			tech: 'WinUI 3 • C#',
-			desc: 'Kontrolni panel sa video strimingom niske latencije za inženjerski nadzor.',
+			desc: 'Napredna kontrolna stanica sa ONNX Runtime-om za inženjerski nadzor na Windows 11 platformi.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Windows',
 			icon: '🖥️'
 		},
 		{
+			title: 'Linux Klijent',
+			tech: 'GTK4 • Python',
+			desc: 'Native GNOME aplikacija optimizovana za nisku latenciju i stabilnost na Linux distribucijama.',
+			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Linux',
+			icon: '🐧'
+		},
+		{
 			title: 'Android App',
 			tech: 'Kotlin • Compose',
-			desc: 'Mobilna kontrola sa WebSocket protokolom za upravljanje u realnom vremena.',
+			desc: 'Mobilna kontrola sa WebSocket komunikacijom za upravljanje robotskim vozilom u realnom vremenu.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Android',
 			icon: '📱'
 		},
 		{
 			title: 'Python Engine',
-			tech: 'YOLOv11 • ONNX',
-			desc: 'Motor koji obrađuje video stream i vrši AI klasifikaciju u realnom vremenu.',
+			tech: 'YOLOv11 • OpenCV',
+			desc: 'Srce AI sistema koje vrši procesiranje video strima i klasifikaciju objekata na samom vozilu.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Python',
 			icon: '🐍'
 		},
 		{
 			title: 'RPi Core',
 			tech: 'Linux • Systemd',
-			desc: 'Sistemski servisi na Raspberry Pi 5 platformi optimizovani za resurse.',
+			desc: 'Sistemski servisi i drajveri na Raspberry Pi 5 platformi zaduženi za hardversku orkestraciju.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Raspberry-Pi',
 			icon: '⚙️'
 		},
 		{
 			title: 'Veb Dashboard',
 			tech: 'Next.js • WS',
-			desc: 'Daljinski monitoring telemetrije i stanja senzora vozila preko pregledača.',
+			desc: 'Cloud-ready panel za daljinski monitoring telemetrije i vizuelni uvid u stanje senzora vozila.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Veb-Kontrola',
 			icon: '🌐'
-		},
-		{
-			title: 'Sajt Projekta',
-			tech: 'SvelteKit • TS',
-			desc: 'Interaktivna prezentacija dokumentacije i ekosistema celog projekta.',
-			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Sajt',
-			icon: '🌍'
 		}
 	];
 </script>
@@ -297,14 +297,13 @@
 </footer>
 
 <style>
-	/* --- BAZNI STILOVI --- */
+	/* Stilovi ostaju isti kao u tvom originalnom kodu */
 	.section-container {
 		max-width: 1200px;
 		margin: 80px auto;
 		padding: 0 20px;
 	}
 
-	/* --- HERO SEKCIJA --- */
 	.hero {
 		min-height: 85vh;
 		display: flex;
@@ -345,7 +344,6 @@
 		color: var(--primary);
 	}
 
-	/* --- SEKCIJE --- */
 	.section-header {
 		text-align: center;
 		margin-bottom: 50px;
@@ -356,7 +354,6 @@
 		margin-bottom: 12px;
 	}
 
-	/* --- HARDVER --- */
 	.presentation-grid {
 		display: grid;
 		grid-template-columns: 1.2fr 1fr;
@@ -398,7 +395,6 @@
 		text-align: center;
 	}
 
-	/* --- MODERN GRID & CARDS --- */
 	.modern-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -435,7 +431,6 @@
 		transition: opacity 0.4s ease;
 	}
 
-	/* NAGLAŠENA KARTICA (EDUKACIJA) */
 	.featured-card {
 		border: 1px solid rgba(56, 189, 248, 0.3);
 		background: rgba(56, 189, 248, 0.04);
