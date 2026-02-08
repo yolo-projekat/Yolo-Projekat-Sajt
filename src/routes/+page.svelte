@@ -43,13 +43,13 @@
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Veb-Kontrola',
 			icon: '🌐'
 		},
-        {
-            title: 'YOLO Veb Sajt',
-            tech: 'SvelteKit, Tailwind, GitHub Pages',
-            desc: 'Centralni hub za dokumentaciju, specifikacije i prezentaciju celog ekosistema.',
-            link: 'https://github.com/yolo-projekat/Yolo-Projekat-Sajt',
-            icon: '🌍'
-        },
+		{
+			title: 'YOLO Veb Sajt',
+			tech: 'SvelteKit, Tailwind, GitHub Pages',
+			desc: 'Centralni hub za dokumentaciju, specifikacije i prezentaciju celog ekosistema.',
+			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Sajt',
+			icon: '🌍'
+		}
 	];
 </script>
 
@@ -142,13 +142,17 @@
 	.gradient-text {
 		font-size: clamp(2.5rem, 8vw, 5rem);
 		font-weight: 900;
-		background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+		background: linear-gradient(135deg, #ffffff 30%, var(--primary, #38bdf8) 100%);
+
+		background-clip: text;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		line-height: 1.1;
-		margin: 0 0 20px 0;
-	}
 
+		line-height: 1.2;
+		margin-bottom: 20px;
+
+		display: block;
+	}
 	.hero p {
 		color: var(--text-dim);
 		font-size: 1.2rem;
