@@ -42,7 +42,14 @@
 			desc: 'Interaktivni dashboard za daljinsko upravljanje vozilom i video monitoring.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Veb-Kontrola',
 			icon: '🌐'
-		}
+		},
+        {
+            title: 'YOLO Veb Sajt',
+            tech: 'SvelteKit, Tailwind, GitHub Pages',
+            desc: 'Centralni hub za dokumentaciju, specifikacije i prezentaciju celog ekosistema.',
+            link: 'https://github.com/yolo-projekat/Yolo-Projekat-Sajt',
+            icon: '🌍'
+        },
 	];
 </script>
 
