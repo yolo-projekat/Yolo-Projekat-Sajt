@@ -23,7 +23,7 @@
 			icon: '📱'
 		},
 		{
-			title: 'Python Skripte',
+			title: 'Python Skripta',
 			tech: 'Python, YOLOv8, OpenCV',
 			desc: 'Multithreaded sistem za detekciju i automatsko praćenje objekata.',
 			link: 'https://github.com/yolo-projekat/Yolo-Projekat-Python',
