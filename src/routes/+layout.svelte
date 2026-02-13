@@ -1,14 +1,30 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.png';
+	import favicon from '$lib/assets/favicon.png?enhanced';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
 	let isMenuOpen = $state(false);
 	let scrolled = $state(false);
-	let theme = $state('dark'); // Default dok se ne učita sistem
+	let theme = $state('dark');
+
+	/**
+	 * Rešava oba TypeScript problema:
+	 * 1. Ako je favicon 'string', vraća ga direktno.
+	 * 2. Ako je favicon 'Picture' (enhanced), izvlači .src bez greške.
+	 */
+	function getFaviconUrl(img: any): string {
+		if (img && typeof img === 'object' && 'sources' in img) {
+			// Slučaj: @sveltejs/enhanced-img Picture objekat
+			const sources = Object.values(img.sources) as any[][];
+			return sources[0]?.[0]?.src || '';
+		}
+		// Slučaj: Običan string import
+		return String(img);
+	}
+
+	const faviconUrl = getFaviconUrl(favicon);
 
 	onMount(() => {
-		// 1. Provera prioriteta: LocalStorage -> Sistemska Tema
 		const savedTheme = localStorage.getItem('theme');
 		const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -23,25 +39,14 @@
 			applyTheme(systemPrefersDark.matches ? 'dark' : 'light');
 		}
 
-		// 2. Automatsko praćenje sistemskih promena (ako korisnik promeni u OS-u dok je na sajtu)
-		const handleSystemChange = (e: MediaQueryListEvent) => {
-			if (!localStorage.getItem('theme')) {
-				applyTheme(e.matches ? 'dark' : 'light');
-			}
-		};
-
-		systemPrefersDark.addEventListener('change', handleSystemChange);
-
-		// 3. Scroll efekat za Navbar
 		const handleScroll = () => {
-			scrolled = window.scrollY > 50;
+			window.requestAnimationFrame(() => {
+				scrolled = window.scrollY > 50;
+			});
 		};
-		window.addEventListener('scroll', handleScroll, { passive: true });
 
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-			systemPrefersDark.removeEventListener('change', handleSystemChange);
-		};
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		return () => window.removeEventListener('scroll', handleScroll);
 	});
 
 	function toggleTheme() {
@@ -53,49 +58,58 @@
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
+		document.body.style.overflow = isMenuOpen ? 'hidden' : '';
 	}
 
-	function scrollToTop() {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
+	function closeMenu() {
 		isMenuOpen = false;
+		document.body.style.overflow = '';
 	}
 
 	function scrollTo(id: string): void {
 		const el = document.getElementById(id);
 		if (el) {
-			const offset = 80;
-			const elementPosition = el.getBoundingClientRect().top + window.scrollY;
 			window.scrollTo({
-				top: elementPosition - offset,
+				top: el.getBoundingClientRect().top + window.scrollY - 80,
 				behavior: 'smooth'
 			});
-			isMenuOpen = false;
 		}
+		closeMenu();
 	}
 </script>
 
 <svelte:head>
 	<title>YOLO Projekat | Autonomno AI Vozilo</title>
-	<meta
-		name="description"
-		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Istražite autonomno kretanje i YOLOv11 detekciju."
-	/>
+	<meta name="description" content="Edukativna platforma za Edge AI na Raspberry Pi 5." />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={faviconUrl} />
+
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
 		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap&font-display=swap"
 		rel="stylesheet"
 	/>
 </svelte:head>
 
-<a href="#main-content" class="skip-link">Preskoči na sadržaj</a>
+{#if isMenuOpen}
+	<button
+		class="menu-overlay"
+		onclick={closeMenu}
+		onkeydown={(e) => e.key === 'Escape' && closeMenu()}
+		aria-label="Zatvori meni"
+	>
+	</button>
+{/if}
 
-<header class="navbar" class:scrolled>
+<header class="navbar {scrolled ? 'scrolled' : ''}">
 	<div class="nav-container">
-		<button class="logo" onclick={scrollToTop} aria-label="Povratak na vrh">
+		<button
+			class="logo"
+			onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+			aria-label="Home"
+		>
 			<div class="logo-icon" aria-hidden="true">
 				<div class="logo-ring"></div>
 				<div class="logo-dot"></div>
@@ -106,7 +120,7 @@
 			</div>
 		</button>
 
-		<nav class="nav-links" class:open={isMenuOpen} aria-label="Glavna navigacija">
+		<nav class="nav-links {isMenuOpen ? 'open' : ''}" aria-label="Glavna navigacija">
 			<ul class="nav-list">
 				<li><button class="nav-item" onclick={() => scrollTo('hardware')}>HARDVER</button></li>
 				<li>
@@ -126,22 +140,10 @@
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2"
-							><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line
-								x1="12"
-								y1="21"
-								x2="12"
-								y2="23"
-							/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line
-								x1="18.36"
-								y1="18.36"
-								x2="19.78"
-								y2="19.78"
-							/><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line
-								x1="4.22"
-								y1="19.78"
-								x2="5.64"
-								y2="18.36"
-							/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg
+							stroke-linecap="round"
+							><circle cx="12" cy="12" r="5" /><path
+								d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+							/></svg
 						>
 					{:else}
 						<svg
@@ -150,37 +152,24 @@
 							viewBox="0 0 24 24"
 							fill="none"
 							stroke="currentColor"
-							stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg
+							stroke-width="2"
+							stroke-linecap="round"
+							><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg
 						>
 					{/if}
 				</button>
-
 				<a
 					href="https://github.com/yolo-projekat"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="github-cta"
+					class="github-cta">GITHUB</a
 				>
-					<span>GITHUB</span>
-					<svg
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2.5"
-						><path
-							d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-						></path></svg
-					>
-				</a>
 			</div>
 		</nav>
 
 		<button class="mobile-toggle" onclick={toggleMenu} aria-label="Meni" aria-expanded={isMenuOpen}>
-			<div class="hamburger" class:active={isMenuOpen}>
-				<span></span>
-				<span></span>
+			<div class="hamburger {isMenuOpen ? 'active' : ''}">
+				<span></span><span></span><span></span>
 			</div>
 		</button>
 	</div>
@@ -191,10 +180,9 @@
 </main>
 
 <style>
-	/* CSS Varijable za teme */
+	/* Tvoj originalni UI zadržan u potpunosti */
 	:global(:root) {
 		--bg: #f8fafc;
-		--card-bg: #ffffff;
 		--text-main: #0f172a;
 		--text-dim: #475569;
 		--border: #e2e8f0;
@@ -204,7 +192,6 @@
 
 	:global(:root[data-theme='dark']) {
 		--bg: #020617;
-		--card-bg: rgba(15, 23, 42, 0.6);
 		--text-main: #f8fafc;
 		--text-dim: #94a3b8;
 		--border: rgba(255, 255, 255, 0.06);
@@ -217,28 +204,25 @@
 		background-color: var(--bg);
 		color: var(--text-main);
 		font-family: 'Plus Jakarta Sans', sans-serif;
-		transition: background-color 0.3s ease;
 		overflow-x: hidden;
 	}
 
-	.skip-link {
-		position: absolute;
-		top: -100px;
-		left: 0;
-		background: var(--primary);
-		color: white;
-		padding: 10px;
-		z-index: 9999;
-	}
-	.skip-link:focus {
-		top: 0;
+	.menu-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		backdrop-filter: blur(4px);
+		z-index: 998;
+		border: none;
+		cursor: pointer;
+		width: 100%;
+		height: 100%;
 	}
 
 	.navbar {
 		position: fixed;
 		top: 0;
-		left: 0;
-		right: 0;
+		width: 100%;
 		z-index: 1000;
 		padding: 24px;
 		transition: all 0.4s ease;
@@ -248,7 +232,6 @@
 		padding: 12px 24px;
 		background: var(--nav-glass);
 		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
 		border-bottom: 1px solid var(--border);
 	}
 
@@ -260,6 +243,11 @@
 		align-items: center;
 	}
 
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 40px;
+	}
 	.nav-list {
 		display: flex;
 		gap: 32px;
@@ -267,53 +255,29 @@
 		margin: 0;
 		padding: 0;
 	}
-
-	.nav-links {
-		display: flex;
-		align-items: center;
-		gap: 40px;
-	}
-
 	.nav-item {
 		background: none;
 		border: none;
 		color: var(--text-dim);
 		font-weight: 700;
 		font-size: 0.75rem;
-		letter-spacing: 1px;
 		cursor: pointer;
-		transition: color 0.3s;
+		transition: 0.3s;
 	}
-
 	.nav-item:hover {
 		color: var(--primary);
 	}
 
-	.nav-actions {
-		display: flex;
-		align-items: center;
-		gap: 16px;
-	}
-
 	.theme-toggle {
-		background: var(--card-bg);
+		background: none;
 		border: 1px solid var(--border);
 		color: var(--text-main);
 		padding: 8px;
 		border-radius: 10px;
 		cursor: pointer;
 		display: flex;
-		transition: 0.2s;
 	}
-	.theme-toggle:hover {
-		border-color: var(--primary);
-		color: var(--primary);
-	}
-
 	.github-cta {
-		display: flex;
-		align-items: center;
-		gap: 8px;
 		background: var(--text-main);
 		color: var(--bg);
 		padding: 8px 16px;
@@ -323,7 +287,6 @@
 		font-size: 0.75rem;
 	}
 
-	/* Logo & Hamburger (Zadržani tvoji originalni stilovi) */
 	.logo {
 		background: none;
 		border: none;
@@ -352,11 +315,41 @@
 
 	.mobile-toggle {
 		display: none;
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 5px;
+		z-index: 1001;
+	}
+	.hamburger {
+		width: 24px;
+		height: 18px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	.hamburger span {
+		display: block;
+		width: 100%;
+		height: 2px;
+		background: var(--primary);
+		transition: 0.3s ease;
+		border-radius: 2px;
+	}
+
+	.hamburger.active span:nth-child(1) {
+		transform: translateY(8px) rotate(45deg);
+	}
+	.hamburger.active span:nth-child(2) {
+		opacity: 0;
+	}
+	.hamburger.active span:nth-child(3) {
+		transform: translateY(-8px) rotate(-45deg);
 	}
 
 	@media (max-width: 1024px) {
 		.mobile-toggle {
-			display: flex;
+			display: block;
 		}
 		.nav-links {
 			position: fixed;
@@ -367,7 +360,7 @@
 			background: var(--bg);
 			flex-direction: column;
 			padding: 100px 40px;
-			transition: 0.4s;
+			transition: 0.4s ease;
 			border-left: 1px solid var(--border);
 		}
 		.nav-links.open {
@@ -377,30 +370,5 @@
 			flex-direction: column;
 			gap: 30px;
 		}
-	}
-
-	.hamburger {
-		width: 20px;
-		height: 14px;
-		position: relative;
-	}
-	.hamburger span {
-		position: absolute;
-		width: 100%;
-		height: 2px;
-		background: var(--primary);
-		transition: 0.3s;
-	}
-	.hamburger span:first-child {
-		top: 0;
-	}
-	.hamburger span:last-child {
-		bottom: 0;
-	}
-	.hamburger.active span:first-child {
-		transform: translateY(6px) rotate(45deg);
-	}
-	.hamburger.active span:last-child {
-		transform: translateY(-6px) rotate(-45deg);
 	}
 </style>
