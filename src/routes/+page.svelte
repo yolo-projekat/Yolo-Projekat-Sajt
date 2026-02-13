@@ -2,8 +2,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
-	// Svelte 5 Rune: Reaktivno praćenje stanja (optimizovano)
-	let visibleSections = $state(new Set());
+	// Svelte 5 Rune: Reaktivno praćenje sekcija
+	let visibleSections = $state(new Set<string>());
 
 	onMount(() => {
 		const observer = new IntersectionObserver(
@@ -11,12 +11,11 @@
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						visibleSections.add(entry.target.id);
-						// Trigger reaktivnosti u Svelte 5
 						visibleSections = new Set(visibleSections);
 					}
 				});
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.15 }
 		);
 
 		document.querySelectorAll('section').forEach((section) => observer.observe(section));
@@ -79,39 +78,14 @@
 
 <svelte:head>
 	<title>Autonomno YOLO Vozilo | Danilo Stoletović</title>
-	<meta
-		name="description"
-		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Istražite autonomno kretanje, YOLOv11 detekciju i softverski ekosistem."
-	/>
-	<meta
-		name="keywords"
-		content="YOLOv11, Raspberry Pi 5, Edge AI, Robotika, Mecanum, Python, WinUI, Android"
-	/>
-
-	<meta property="og:title" content="Autonomno YOLO Vozilo" />
-	<meta property="og:type" content="website" />
-	<meta property="og:description" content="Napredna platforma za autonomno kretanje i AI viziju." />
-	<meta property="og:image" content="/hardverska-sema.avif" />
-
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Autonomno YOLO Vozilo" />
-	<meta
-		name="twitter:description"
-		content="Istražite hardversku i softversku arhitekturu autonomnog vozila."
-	/>
-
+	<meta name="description" content="Edukativna platforma za Edge AI i Raspberry Pi 5." />
 	<script type="application/ld+json">
 		{
 			"@context": "https://schema.org",
 			"@type": "SoftwareSourceCode",
 			"name": "Autonomno YOLO Vozilo",
-			"author": {
-				"@type": "Person",
-				"name": "Danilo Stoletović"
-			},
-			"description": "Platforma za istraživanje Edge AI tehnologija i ugradnih sistema na Raspberry Pi 5 arhitekturi.",
-			"programmingLanguage": ["Python", "C#", "Kotlin", "TypeScript"],
-			"runtimePlatform": ["Raspberry Pi 5", "Windows", "Linux", "Android"]
+			"author": { "@type": "Person", "name": "Danilo Stoletović" },
+			"programmingLanguage": ["Python", "C#", "Kotlin", "TypeScript"]
 		}
 	</script>
 </svelte:head>
@@ -119,18 +93,16 @@
 <section id="hero" class="hero">
 	<div class="hero-content">
 		<h1 class="gradient-text">AUTONOMNO YOLO VOZILO</h1>
-
 		{#if visibleSections.has('hero')}
 			<div in:fade={{ delay: 100, duration: 800 }}>
 				<p class="hero-desc">
-					Otvorena platforma za istraživanje <strong>Edge AI tehnologija</strong> i ugradnih sistema na
-					Raspberry Pi 5 arhitekturi.
+					Otvorena platforma za istraživanje <strong>Edge AI tehnologija</strong> na Raspberry Pi 5 arhitekturi.
 				</p>
 				<div class="badges">
-					<span>🎓 Edukativni Projekt</span>
-					<span>🧠 YOLOv11 & OCR</span>
-					<span>🚀 N1 Autonomija</span>
-					<span>🏎️ Mecanum Drive</span>
+					<span class="high-contrast-badge">🎓 Edukativni Projekt</span>
+					<span class="high-contrast-badge">🧠 YOLOv11 & OCR</span>
+					<span class="high-contrast-badge">🚀 N1 Autonomija</span>
+					<span class="high-contrast-badge">🏎️ Mecanum Drive</span>
 				</div>
 			</div>
 		{/if}
@@ -141,41 +113,32 @@
 	{#if visibleSections.has('hardware')}
 		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Hardverska Arhitektura</h2>
-			<p>Transparentan uvid u komponente namenjen budućim inženjerima</p>
+			<p class="section-subtitle">Transparentan uvid u komponente namenjen inženjerima</p>
 		</header>
-
 		<div class="presentation-grid">
 			<div in:fly={{ x: -30, duration: 1000 }} class="image-container">
-				<figure class="img-wrapper" style="margin:0;">
+				<figure class="img-wrapper">
 					<img
 						src="/hardverska-sema.avif"
-						alt="Hardverska šema YOLO vozila - Povezivanje RPi 5, Motora i Kamere"
+						alt="Hardverska šema"
 						class="hardware-img"
-						width="800"
-						height="600"
 						loading="lazy"
-						decoding="async"
 					/>
 				</figure>
 				<p class="caption">Slika 1: Šema povezivanja RPi 5 i senzorskih modula</p>
 			</div>
-
 			<div in:fly={{ x: 30, duration: 1000 }} class="specs-card">
 				<article class="spec-item">
-					<strong>Napajanje</strong>
-					<span>XL4015 Step-down konverter (5.1V, 5A) za stabilan rad Raspberry Pi 5.</span>
+					<strong class="text-primary-high">Napajanje</strong>
+					<p>XL4015 Step-down konverter (5.1V, 5A) za stabilan rad Raspberry Pi 5.</p>
 				</article>
 				<article class="spec-item">
-					<strong>Kretanje</strong>
-					<span>Četiri DC motora sa Mecanum točkovima za kretanje u svim pravcima.</span>
+					<strong class="text-primary-high">Kretanje</strong>
+					<p>Četiri DC motora sa Mecanum točkovima za kretanje u svim pravcima.</p>
 				</article>
 				<article class="spec-item">
-					<strong>Vid</strong>
-					<span>RPi Camera Module V2 (8MP) povezana putem MIPI CSI-2 interfejsa.</span>
-				</article>
-				<article class="spec-item">
-					<strong>Učenje kroz rad</strong>
-					<span>Sistem je dizajniran za lako testiranje različitih algoritama kretanja.</span>
+					<strong class="text-primary-high">Vid</strong>
+					<p>RPi Camera Module V2 (8MP) povezana putem MIPI CSI-2 interfejsa.</p>
 				</article>
 			</div>
 		</div>
@@ -186,52 +149,37 @@
 	{#if visibleSections.has('software-logic')}
 		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Softverska Inteligencija</h2>
-			<p>Optimizacija neuronske mreže za rad u realnom vremenu</p>
+			<p class="section-subtitle">Optimizacija neuronske mreže za rad u realnom vremenu</p>
 		</header>
-
 		<div class="modern-grid">
-			<article in:fly={{ y: 30, delay: 100 }} class="modern-card no-link">
-				<div class="card-glow"></div>
+			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">🧠</span>
-						<span class="tech-pill">AI Model</span>
+						<span class="tech-pill-high">AI Model</span>
 					</div>
 					<h3>YOLOv11 ONNX</h3>
-					<p>
-						Korišćenje ONNX formata omogućava modelu da koristi specijalizovane biblioteke za
-						ubrzanje na CPU, čime se postiže visok FPS bez eksternog GPU-a.
-					</p>
+					<p>Visok FPS na CPU korišćenjem ONNX optimizacija bez eksternog GPU-a.</p>
 				</div>
 			</article>
-
-			<article in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
-				<div class="card-glow"></div>
+			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">👁️</span>
-						<span class="tech-pill">OCR Engine</span>
+						<span class="tech-pill-high">OCR Engine</span>
 					</div>
 					<h3>Tesseract OCR</h3>
-					<p>
-						Služi za ekstrakciju teksta u realnom vremenu. Omogućava vozilu da očitava saobraćajne
-						znakove i registarske tablice tokom kretanja.
-					</p>
+					<p>Ekstrakcija teksta i saobraćajnih znakova u realnom vremenu.</p>
 				</div>
 			</article>
-
-			<article in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
-				<div class="card-glow"></div>
+			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">⚡</span>
-						<span class="tech-pill">Parallelism</span>
+						<span class="tech-pill-high">Parallelism</span>
 					</div>
 					<h3>Multithreading</h3>
-					<p>
-						Sistem paralelno obrađuje tri toka: akviziciju slike, AI inferenciju i logiku kontrole
-						motora, sprečavajući kašnjenje u upravljanju.
-					</p>
+					<p>Paralelna obrada akvizicije slike, inferencije i logike kontrole motora.</p>
 				</div>
 			</article>
 		</div>
@@ -242,39 +190,25 @@
 	{#if visibleSections.has('projects')}
 		<header class="section-header">
 			<h2 class="section-title">Modularni Ekosistem</h2>
-			<p>Kompletan izvorni kod dostupan za učenje i modifikaciju</p>
+			<p class="section-subtitle">Kompletan izvorni kod dostupan za učenje</p>
 		</header>
-
 		<div class="modern-grid">
 			{#each projects as project, i (project.link)}
 				<a
 					href={project.link}
 					target="_blank"
-					rel="noopener noreferrer"
 					class="modern-card-link"
-					in:fly={{ y: 30, delay: i * 100 }}
-					aria-label={`Pogledaj izvorni kod za ${project.title}`}
+					in:fly={{ y: 30, delay: i * 50 }}
 				>
-					<article class="modern-card">
-						<div class="card-glow"></div>
+					<article class="modern-card interactive">
 						<div class="card-content">
 							<div class="card-top">
-								<span class="modern-icon" aria-hidden="true">{project.icon}</span>
-								<span class="tech-pill">{project.tech}</span>
+								<span class="modern-icon">{project.icon}</span>
+								<span class="tech-pill-high">{project.tech}</span>
 							</div>
 							<h3>{project.title}</h3>
 							<p>{project.desc}</p>
-							<div class="card-footer">
-								<span class="action-text">Pogledaj kod</span>
-								<svg
-									width="18"
-									height="18"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg
-								>
-							</div>
+							<div class="card-footer-high"><span>Pogledaj kod →</span></div>
 						</div>
 					</article>
 				</a>
@@ -287,52 +221,37 @@
 	{#if visibleSections.has('use-cases')}
 		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Primarna Namena i Primena</h2>
-			<p>Od edukativne platforme do realnih industrijskih rešenja</p>
+			<p class="section-subtitle">Od edukativne platforme do industrijskih rešenja</p>
 		</header>
-
 		<div class="modern-grid">
-			<article in:fly={{ y: 30, delay: 100 }} class="modern-card no-link featured-card">
-				<div class="card-glow featured-glow"></div>
+			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive featured-card">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">🎓</span>
-						<span class="tech-pill primary-pill">Glavna Svrha</span>
+						<span class="tech-pill-high primary-pill">Glavna Svrha</span>
 					</div>
 					<h3>Edukacija i R&D</h3>
-					<p>
-						Projekat služi kao sveobuhvatna baza za učenje savremenih tehnologija: od Python
-						programiranja i AI treninga, do sistemske administracije na Linux-u i elektronike.
-					</p>
+					<p>Baza za učenje savremenih tehnologija: od Python programiranja do elektronike.</p>
 				</div>
 			</article>
-
-			<article in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
-				<div class="card-glow"></div>
+			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">🏙️</span>
-						<span class="tech-pill">Smart City</span>
+						<span class="tech-pill-high">Smart City</span>
 					</div>
 					<h3>Gradska Infrastruktura</h3>
-					<p>
-						Razvijeni algoritmi se mogu primeniti na pametne raskrsnice za monitoring saobraćaja u
-						realnom vremenu i automatizovano očitavanje parking mesta.
-					</p>
+					<p>Primena na pametne raskrsnice za monitoring saobraćaja u realnom vremenu.</p>
 				</div>
 			</article>
-
-			<article in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
-				<div class="card-glow"></div>
+			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
 						<span class="modern-icon">🏭</span>
-						<span class="tech-pill">Industry 4.0</span>
+						<span class="tech-pill-high">Industry 4.0</span>
 					</div>
 					<h3>Logistika</h3>
-					<p>
-						Implementacija autonomnih transportnih robota u kontrolisanim okruženjima magacina koji
-						zahtevaju precizno izbegavanje prepreka.
-					</p>
+					<p>Autonomni transportni roboti u magacinima koji zahtevaju precizno kretanje.</p>
 				</div>
 			</article>
 		</div>
@@ -345,257 +264,227 @@
 </footer>
 
 <style>
-	.section-container {
-		max-width: 1200px;
-		margin: 80px auto;
-		padding: 0 20px;
+	:global(:root) {
+		--primary-high: #0277bd;
+		--text-main: #0f172a;
+		--text-dim-high: #334155;
+		--card-bg-glass: rgba(255, 255, 255, 0.7);
+		--border: rgba(15, 23, 42, 0.1);
 	}
 
+	:global([data-theme='dark']) {
+		--primary-high: #38bdf8;
+		--text-main: #f8fafc;
+		--text-dim-high: #cbd5e1;
+		--card-bg-glass: rgba(15, 23, 42, 0.6);
+		--border: rgba(255, 255, 255, 0.1);
+	}
+
+	.section-container {
+		max-width: 1200px;
+		margin: 100px auto;
+		padding: 0 24px;
+	}
 	.hero {
-		min-height: 85vh;
+		min-height: 80vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		text-align: center;
-		padding: 100px 20px 60px;
-		background: radial-gradient(circle at center, var(--card-bg) 0%, var(--bg) 100%);
 	}
+
 	.gradient-text {
-		font-size: clamp(2.5rem, 10vw, 5rem);
+		font-size: clamp(2.5rem, 8vw, 5rem);
 		font-weight: 900;
-		background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%);
-		background-clip: text;
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
 		line-height: 1.1;
 		margin-bottom: 24px;
+		background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-high) 100%);
+		background-clip: text;
+		-webkit-background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
 	}
+
 	.hero-desc {
-		color: var(--text-dim);
-		font-size: clamp(1rem, 4vw, 1.25rem);
-		max-width: 750px;
+		color: var(--text-dim-high);
+		font-size: clamp(1.1rem, 2vw, 1.3rem);
+		max-width: 800px;
 		margin: 0 auto 40px;
 	}
 	.badges {
 		display: flex;
+		gap: 12px;
 		justify-content: center;
-		gap: 10px;
 		flex-wrap: wrap;
 	}
-	.badges span {
-		background: rgba(56, 189, 248, 0.1);
-		border: 1px solid rgba(56, 189, 248, 0.2);
-		padding: 6px 14px;
-		border-radius: 100px;
-		font-size: 0.75rem;
-		color: var(--primary);
+	.high-contrast-badge {
+		background: var(--primary-high);
+		color: #fff;
+		padding: 8px 18px;
+		border-radius: 50px;
+		font-size: 0.85rem;
+		font-weight: 700;
 	}
 
 	.section-header {
 		text-align: center;
-		margin-bottom: 50px;
+		margin-bottom: 60px;
 	}
 	.section-title {
-		font-size: clamp(1.75rem, 5vw, 2.5rem);
+		font-size: clamp(2rem, 5vw, 2.8rem);
 		color: var(--text-main);
 		margin-bottom: 12px;
+	}
+	.section-subtitle {
+		color: var(--text-dim-high);
+		font-size: 1.1rem;
 	}
 
 	.presentation-grid {
 		display: grid;
 		grid-template-columns: 1.2fr 1fr;
-		gap: 30px;
+		gap: 40px;
 		align-items: start;
 	}
 	.image-container {
-		background: var(--card-bg);
+		background: var(--card-bg-glass);
 		border: 1px solid var(--border);
 		border-radius: 24px;
-		padding: 16px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-		transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+		padding: 20px;
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 	}
 	.img-wrapper {
-		width: 100%;
-		overflow: hidden;
 		border-radius: 16px;
-		/* Performance: Aspect ratio placeholder */
-		aspect-ratio: 4/3;
+		overflow: hidden;
+		aspect-ratio: 16/10;
+		margin: 0;
 	}
 	.hardware-img {
 		width: 100%;
-		height: 100%; /* Changed to 100% to match wrapper */
-		object-fit: contain;
-		display: block;
+		height: 100%;
+		object-fit: cover;
 		transition: transform 0.5s ease;
 	}
-	.image-container:hover {
-		transform: translateY(-5px);
-		border-color: rgba(56, 189, 248, 0.3);
-	}
 	.image-container:hover .hardware-img {
-		transform: scale(1.08);
+		transform: scale(1.05);
 	}
 	.caption {
 		margin-top: 15px;
-		color: var(--text-dim);
-		font-size: 0.8rem;
-		font-style: italic;
+		color: var(--text-dim-high);
 		text-align: center;
+		font-size: 0.9rem;
+		font-weight: 600;
 	}
 
+	.specs-card {
+		background: var(--card-bg-glass);
+		padding: 40px;
+		border-radius: 24px;
+		border: 1px solid var(--border);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+	.text-primary-high {
+		color: var(--primary-high);
+		font-size: 1.1rem;
+		display: block;
+		margin-bottom: 5px;
+		font-weight: 800;
+	}
+	.spec-item p {
+		color: var(--text-dim-high);
+		margin-bottom: 25px;
+		line-height: 1.6;
+	}
+
+	/* UNIFIED CARD STYLES */
 	.modern-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 25px;
-		margin-top: 40px;
+		gap: 24px;
 	}
 	.modern-card-link {
 		text-decoration: none;
 		color: inherit;
 		display: block;
-		height: 100%;
 	}
-
 	.modern-card {
-		position: relative;
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: var(--card-bg-glass);
+		border: 1px solid var(--border);
 		border-radius: 24px;
-		overflow: hidden;
-		transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		height: 100%;
-	}
-
-	.card-glow {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
-		opacity: 0;
-		transition: opacity 0.4s ease;
-	}
-
-	.featured-card {
-		border: 1px solid rgba(56, 189, 248, 0.3);
-		background: rgba(56, 189, 248, 0.04);
-	}
-	.featured-glow {
-		opacity: 0.3;
-		background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.3) 0%, transparent 70%);
-	}
-	.primary-pill {
-		background: var(--primary) !important;
-		color: white !important;
-	}
-
-	.modern-card:hover {
-		transform: translateY(-10px) scale(1.02);
-		background: rgba(255, 255, 255, 0.05);
-		border-color: rgba(56, 189, 248, 0.4);
-		box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-	}
-
-	.modern-card:hover .card-glow {
-		opacity: 1;
-	}
-	.card-content {
-		position: relative;
-		padding: 32px;
-		z-index: 1;
 		display: flex;
 		flex-direction: column;
-		height: 100%;
+	}
+	.interactive:hover {
+		transform: translateY(-10px);
+		border-color: var(--primary-high);
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+	}
+	.card-content {
+		padding: 32px;
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
 	}
 	.card-top {
 		display: flex;
 		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 24px;
+		align-items: center;
+		margin-bottom: 20px;
 	}
 	.modern-icon {
-		font-size: 2rem;
-		filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
+		font-size: 1.8rem;
 	}
-	.tech-pill {
-		font-size: 0.7rem;
+	.tech-pill-high {
+		background: rgba(2, 119, 189, 0.1);
+		color: var(--primary-high);
+		padding: 6px 14px;
+		border-radius: 8px;
+		font-size: 0.75rem;
 		font-weight: 800;
-		text-transform: uppercase;
-		color: var(--primary);
-		background: rgba(56, 189, 248, 0.1);
-		padding: 6px 12px;
-		border-radius: 100px;
-		border: 1px solid rgba(56, 189, 248, 0.2);
+		border: 1px solid rgba(2, 119, 189, 0.2);
+	}
+	.primary-pill {
+		background: var(--primary-high) !important;
+		color: white !important;
+	}
+	.featured-card {
+		border: 2px solid var(--primary-high);
 	}
 	.modern-card h3 {
-		font-size: 1.4rem;
-		margin: 0 0 12px 0;
-		font-weight: 700;
 		color: var(--text-main);
+		margin: 10px 0;
+		font-size: 1.5rem;
+		font-weight: 700;
 	}
 	.modern-card p {
-		font-size: 0.95rem;
+		color: var(--text-dim-high);
 		line-height: 1.6;
-		color: var(--text-dim);
-		margin-bottom: 24px;
-	}
-
-	.card-footer {
-		margin-top: auto;
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		color: var(--primary);
-		font-weight: 700;
-		font-size: 0.85rem;
-		opacity: 0.8;
-		transition: gap 0.3s ease;
-	}
-	.modern-card-link:hover .card-footer {
-		gap: 15px;
-		opacity: 1;
-	}
-
-	.specs-card {
-		background: var(--card-bg);
-		padding: 30px;
-		border-radius: 24px;
-		border: 1px solid var(--border);
-	}
-	.spec-item {
-		margin-bottom: 18px;
-	}
-	.spec-item strong {
-		display: block;
-		color: var(--primary);
-		margin-bottom: 4px;
 		font-size: 0.95rem;
+		margin-bottom: 20px;
 	}
-	.spec-item span {
-		color: var(--text-dim);
+	.card-footer-high {
+		margin-top: auto;
+		color: var(--primary-high);
+		font-weight: 800;
 		font-size: 0.9rem;
 	}
 
 	footer {
-		padding: 60px 20px;
+		padding: 80px 24px;
 		text-align: center;
 		border-top: 1px solid var(--border);
-		color: var(--text-dim);
-		font-size: 0.9rem;
+		color: var(--text-main);
 	}
-
 	@media (max-width: 900px) {
 		.presentation-grid {
 			grid-template-columns: 1fr;
-		}
-	}
-	@media (max-width: 480px) {
-		.modern-card:hover {
-			transform: translateY(-5px) scale(1.01);
 		}
 	}
 </style>
