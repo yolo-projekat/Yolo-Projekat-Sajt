@@ -1,28 +1,11 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.png?enhanced';
+	import favicon from '$lib/assets/favicon.png';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
 	let isMenuOpen = $state(false);
 	let scrolled = $state(false);
 	let theme = $state('dark');
-
-	/**
-	 * Rešava oba TypeScript problema:
-	 * 1. Ako je favicon 'string', vraća ga direktno.
-	 * 2. Ako je favicon 'Picture' (enhanced), izvlači .src bez greške.
-	 */
-	function getFaviconUrl(img: any): string {
-		if (img && typeof img === 'object' && 'sources' in img) {
-			// Slučaj: @sveltejs/enhanced-img Picture objekat
-			const sources = Object.values(img.sources) as any[][];
-			return sources[0]?.[0]?.src || '';
-		}
-		// Slučaj: Običan string import
-		return String(img);
-	}
-
-	const faviconUrl = getFaviconUrl(favicon);
 
 	onMount(() => {
 		const savedTheme = localStorage.getItem('theme');
@@ -41,7 +24,7 @@
 
 		const handleScroll = () => {
 			window.requestAnimationFrame(() => {
-				scrolled = window.scrollY > 50;
+				scrolled = window.scrollY > 20;
 			});
 		};
 
@@ -69,8 +52,9 @@
 	function scrollTo(id: string): void {
 		const el = document.getElementById(id);
 		if (el) {
+			const offset = 90;
 			window.scrollTo({
-				top: el.getBoundingClientRect().top + window.scrollY - 80,
+				top: el.getBoundingClientRect().top + window.scrollY - offset,
 				behavior: 'smooth'
 			});
 		}
@@ -81,14 +65,11 @@
 <svelte:head>
 	<title>YOLO Projekat | Autonomno AI Vozilo</title>
 	<meta name="description" content="Edukativna platforma za Edge AI na Raspberry Pi 5." />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-	<link rel="icon" href={faviconUrl} />
-
+	<link rel="icon" type="image/png" href={favicon} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
-		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap&font-display=swap"
+		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
 		rel="stylesheet"
 	/>
 </svelte:head>
@@ -103,14 +84,14 @@
 	</button>
 {/if}
 
-<header class="navbar {scrolled ? 'scrolled' : ''}">
+<header class="navbar" class:scrolled>
 	<div class="nav-container">
 		<button
 			class="logo"
 			onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 			aria-label="Home"
 		>
-			<div class="logo-icon" aria-hidden="true">
+			<div class="logo-icon">
 				<div class="logo-ring"></div>
 				<div class="logo-dot"></div>
 			</div>
@@ -120,7 +101,7 @@
 			</div>
 		</button>
 
-		<nav class="nav-links {isMenuOpen ? 'open' : ''}" aria-label="Glavna navigacija">
+		<nav class="nav-links" class:open={isMenuOpen}>
 			<ul class="nav-list">
 				<li><button class="nav-item" onclick={() => scrollTo('hardware')}>HARDVER</button></li>
 				<li>
@@ -168,8 +149,10 @@
 		</nav>
 
 		<button class="mobile-toggle" onclick={toggleMenu} aria-label="Meni" aria-expanded={isMenuOpen}>
-			<div class="hamburger {isMenuOpen ? 'active' : ''}">
-				<span></span><span></span><span></span>
+			<div class="hamburger" class:active={isMenuOpen}>
+				<span class="line-top"></span>
+				<span class="line-mid"></span>
+				<span class="line-bot"></span>
 			</div>
 		</button>
 	</div>
@@ -180,23 +163,23 @@
 </main>
 
 <style>
-	/* Tvoj originalni UI zadržan u potpunosti */
 	:global(:root) {
-		--bg: #f8fafc;
+		--bg: #fdfdfe;
 		--text-main: #0f172a;
-		--text-dim: #475569;
-		--border: #e2e8f0;
+		--text-dim: #64748b;
 		--primary: #0284c7;
-		--nav-glass: rgba(248, 250, 252, 0.85);
+		--glass-bg: rgba(255, 255, 255, 0.7);
+		--glass-border: rgba(15, 23, 42, 0.08);
+		--nav-pad: 24px;
 	}
 
 	:global(:root[data-theme='dark']) {
-		--bg: #020617;
+		--bg: #030712;
 		--text-main: #f8fafc;
 		--text-dim: #94a3b8;
-		--border: rgba(255, 255, 255, 0.06);
 		--primary: #38bdf8;
-		--nav-glass: rgba(2, 6, 23, 0.85);
+		--glass-bg: rgba(3, 7, 18, 0.7);
+		--glass-border: rgba(255, 255, 255, 0.08);
 	}
 
 	:global(body) {
@@ -205,49 +188,54 @@
 		color: var(--text-main);
 		font-family: 'Plus Jakarta Sans', sans-serif;
 		overflow-x: hidden;
+		transition: background-color 0.4s ease;
 	}
 
 	.menu-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.4);
-		backdrop-filter: blur(4px);
+		background: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
 		z-index: 998;
 		border: none;
 		cursor: pointer;
-		width: 100%;
-		height: 100%;
 	}
 
 	.navbar {
 		position: fixed;
 		top: 0;
-		width: 100%;
+		left: 0;
+		right: 0;
 		z-index: 1000;
-		padding: 24px;
-		transition: all 0.4s ease;
+		padding: var(--nav-pad) 0;
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.navbar.scrolled {
-		padding: 12px 24px;
-		background: var(--nav-glass);
-		backdrop-filter: blur(12px);
-		border-bottom: 1px solid var(--border);
+		padding: 12px 0;
+		background: var(--glass-bg);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border-bottom: 1px solid var(--glass-border);
 	}
 
 	.nav-container {
 		max-width: 1300px;
 		margin: 0 auto;
+		padding: 0 32px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
 
+	/* Nav links Desktop */
 	.nav-links {
 		display: flex;
 		align-items: center;
-		gap: 40px;
+		gap: 48px;
 	}
+
 	.nav-list {
 		display: flex;
 		gap: 32px;
@@ -255,120 +243,196 @@
 		margin: 0;
 		padding: 0;
 	}
+
 	.nav-item {
 		background: none;
 		border: none;
 		color: var(--text-dim);
 		font-weight: 700;
-		font-size: 0.75rem;
+		font-size: 0.8rem;
+		letter-spacing: 0.5px;
 		cursor: pointer;
 		transition: 0.3s;
+		position: relative;
 	}
+
 	.nav-item:hover {
 		color: var(--primary);
 	}
 
+	.nav-item::after {
+		content: '';
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+		width: 0;
+		height: 2px;
+		background: var(--primary);
+		transition: width 0.3s;
+	}
+	.nav-item:hover::after {
+		width: 100%;
+	}
+
+	/* Actions */
+	.nav-actions {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
 	.theme-toggle {
-		background: none;
-		border: 1px solid var(--border);
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
 		color: var(--text-main);
-		padding: 8px;
-		border-radius: 10px;
+		padding: 10px;
+		border-radius: 12px;
 		cursor: pointer;
 		display: flex;
+		transition: 0.3s;
 	}
+
+	.theme-toggle:hover {
+		background: var(--primary);
+		color: white;
+		border-color: var(--primary);
+	}
+
 	.github-cta {
 		background: var(--text-main);
 		color: var(--bg);
-		padding: 8px 16px;
-		border-radius: 10px;
+		padding: 10px 20px;
+		border-radius: 12px;
 		text-decoration: none;
 		font-weight: 800;
 		font-size: 0.75rem;
+		transition: 0.3s;
+		border: 1px solid transparent;
 	}
 
+	.github-cta:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 20px -10px var(--primary);
+	}
+
+	/* Logo */
 	.logo {
 		background: none;
 		border: none;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 14px;
 	}
 	.logo-ring {
-		width: 32px;
-		height: 32px;
-		border: 3px solid var(--primary);
-		border-radius: 10px;
+		width: 36px;
+		height: 36px;
+		border: 3.5px solid var(--primary);
+		border-radius: 12px;
 		transform: rotate(45deg);
+		transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	.logo:hover .logo-ring {
+		transform: rotate(225deg);
 	}
 	.logo-main {
 		font-weight: 800;
-		font-size: 1.2rem;
+		font-size: 1.4rem;
 		color: var(--text-main);
 	}
 	.logo-sub {
 		color: var(--primary);
-		font-size: 0.6rem;
-		letter-spacing: 2px;
+		font-size: 0.65rem;
+		letter-spacing: 3px;
+		font-weight: 700;
 	}
 
+	/* Hamburger MODERNIZOVAN */
 	.mobile-toggle {
 		display: none;
-		background: none;
-		border: none;
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		padding: 12px;
+		border-radius: 14px;
 		cursor: pointer;
-		padding: 5px;
 		z-index: 1001;
 	}
+
 	.hamburger {
-		width: 24px;
-		height: 18px;
+		width: 28px;
+		height: 20px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		position: relative;
 	}
+
 	.hamburger span {
 		display: block;
 		width: 100%;
-		height: 2px;
+		height: 3px;
 		background: var(--primary);
-		transition: 0.3s ease;
-		border-radius: 2px;
+		border-radius: 10px;
+		transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 	}
 
-	.hamburger.active span:nth-child(1) {
-		transform: translateY(8px) rotate(45deg);
+	.hamburger .line-mid {
+		width: 75%;
+		align-self: flex-end;
 	}
-	.hamburger.active span:nth-child(2) {
+
+	.hamburger.active .line-top {
+		transform: translateY(8.5px) rotate(45deg);
+	}
+	.hamburger.active .line-mid {
 		opacity: 0;
+		transform: translateX(20px);
 	}
-	.hamburger.active span:nth-child(3) {
-		transform: translateY(-8px) rotate(-45deg);
+	.hamburger.active .line-bot {
+		transform: translateY(-8.5px) rotate(-45deg);
 	}
 
 	@media (max-width: 1024px) {
 		.mobile-toggle {
-			display: block;
+			display: flex;
 		}
 		.nav-links {
 			position: fixed;
 			top: 0;
 			right: -100%;
-			width: 280px;
+			width: 100%;
+			max-width: 320px;
 			height: 100vh;
-			background: var(--bg);
+			background: var(--glass-bg);
+			backdrop-filter: blur(30px);
+			-webkit-backdrop-filter: blur(30px);
 			flex-direction: column;
-			padding: 100px 40px;
-			transition: 0.4s ease;
-			border-left: 1px solid var(--border);
+			justify-content: center;
+			padding: 40px;
+			transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+			border-left: 1px solid var(--glass-border);
+			gap: 60px;
 		}
 		.nav-links.open {
 			right: 0;
 		}
 		.nav-list {
 			flex-direction: column;
-			gap: 30px;
+			gap: 40px;
+			align-items: center;
+		}
+		.nav-item {
+			font-size: 1.2rem;
+		}
+		.nav-actions {
+			flex-direction: column;
+			width: 100%;
+			gap: 20px;
+		}
+		.github-cta {
+			width: 100%;
+			text-align: center;
+			padding: 16px;
 		}
 	}
 </style>
