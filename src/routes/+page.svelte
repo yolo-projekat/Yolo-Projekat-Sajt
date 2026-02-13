@@ -105,7 +105,7 @@
 		<div class="presentation-grid">
 			<div in:fly={{ x: -30, duration: 1000 }} class="image-container">
 				<div class="img-wrapper">
-					<img src="/hardverska-sema.webp" alt="Hardverska šema YOLO vozila" class="hardware-img" />
+					<img src="/hardverska-sema.avif" alt="Hardverska šema YOLO vozila" class="hardware-img" />
 				</div>
 				<p class="caption">Slika 1: Šema povezivanja RPi 5 i senzorskih modula</p>
 			</div>
