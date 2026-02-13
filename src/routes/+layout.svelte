@@ -49,6 +49,24 @@
 		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
 		rel="stylesheet"
 	/>
+	<title>Autonomno YOLO Vozilo | Danilo Stoletović</title>
+	<meta
+		name="description"
+		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Istražite autonomno kretanje i YOLOv11 detekciju."
+	/>
+
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "CreativeWork",
+			"name": "Autonomno YOLO Vozilo",
+			"author": {
+				"@type": "Person",
+				"name": "Danilo Stoletović"
+			},
+			"description": "Projektovanje i implementacija autonomnog vozila zasnovanog na YOLOv11 i Raspberry Pi 5 platformi."
+		}
+	</script>
 </svelte:head>
 
 <nav class="navbar" class:scrolled>

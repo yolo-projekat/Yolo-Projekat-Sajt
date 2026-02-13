@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { fade, fly, scale } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
+	// Svelte 5 Rune: Reaktivno praćenje stanja (optimizovano)
 	let visibleSections = $state(new Set());
 
 	onMount(() => {
@@ -10,6 +11,7 @@
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						visibleSections.add(entry.target.id);
+						// Trigger reaktivnosti u Svelte 5
 						visibleSections = new Set(visibleSections);
 					}
 				});
@@ -18,6 +20,7 @@
 		);
 
 		document.querySelectorAll('section').forEach((section) => observer.observe(section));
+		return () => observer.disconnect();
 	});
 
 	interface Project {
@@ -74,6 +77,45 @@
 	];
 </script>
 
+<svelte:head>
+	<title>Autonomno YOLO Vozilo | Danilo Stoletović</title>
+	<meta
+		name="description"
+		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Istražite autonomno kretanje, YOLOv11 detekciju i softverski ekosistem."
+	/>
+	<meta
+		name="keywords"
+		content="YOLOv11, Raspberry Pi 5, Edge AI, Robotika, Mecanum, Python, WinUI, Android"
+	/>
+
+	<meta property="og:title" content="Autonomno YOLO Vozilo" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="Napredna platforma za autonomno kretanje i AI viziju." />
+	<meta property="og:image" content="/hardverska-sema.avif" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Autonomno YOLO Vozilo" />
+	<meta
+		name="twitter:description"
+		content="Istražite hardversku i softversku arhitekturu autonomnog vozila."
+	/>
+
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "SoftwareSourceCode",
+			"name": "Autonomno YOLO Vozilo",
+			"author": {
+				"@type": "Person",
+				"name": "Danilo Stoletović"
+			},
+			"description": "Platforma za istraživanje Edge AI tehnologija i ugradnih sistema na Raspberry Pi 5 arhitekturi.",
+			"programmingLanguage": ["Python", "C#", "Kotlin", "TypeScript"],
+			"runtimePlatform": ["Raspberry Pi 5", "Windows", "Linux", "Android"]
+		}
+	</script>
+</svelte:head>
+
 <section id="hero" class="hero">
 	<div class="hero-content">
 		<h1 class="gradient-text">AUTONOMNO YOLO VOZILO</h1>
@@ -81,8 +123,8 @@
 		{#if visibleSections.has('hero')}
 			<div in:fade={{ delay: 100, duration: 800 }}>
 				<p class="hero-desc">
-					Otvorena platforma za istraživanje Edge AI tehnologija i ugradnih sistema na Raspberry Pi
-					5 arhitekturi.
+					Otvorena platforma za istraživanje <strong>Edge AI tehnologija</strong> i ugradnih sistema na
+					Raspberry Pi 5 arhitekturi.
 				</p>
 				<div class="badges">
 					<span>🎓 Edukativni Projekt</span>
@@ -97,40 +139,44 @@
 
 <section id="hardware" class="section-container">
 	{#if visibleSections.has('hardware')}
-		<div in:fade={{ duration: 800 }} class="section-header">
+		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Hardverska Arhitektura</h2>
 			<p>Transparentan uvid u komponente namenjen budućim inženjerima</p>
-		</div>
+		</header>
 
 		<div class="presentation-grid">
 			<div in:fly={{ x: -30, duration: 1000 }} class="image-container">
-				<div class="img-wrapper">
-					<img src="/hardverska-sema.avif" alt="Hardverska šema YOLO vozila" class="hardware-img" />
-				</div>
+				<figure class="img-wrapper" style="margin:0;">
+					<img
+						src="/hardverska-sema.avif"
+						alt="Hardverska šema YOLO vozila - Povezivanje RPi 5, Motora i Kamere"
+						class="hardware-img"
+						width="800"
+						height="600"
+						loading="lazy"
+						decoding="async"
+					/>
+				</figure>
 				<p class="caption">Slika 1: Šema povezivanja RPi 5 i senzorskih modula</p>
 			</div>
 
 			<div in:fly={{ x: 30, duration: 1000 }} class="specs-card">
-				<div class="spec-item">
-					<strong>Napajanje</strong><span
-						>XL4015 Step-down konverter (5.1V, 5A) za stabilan rad Raspberry Pi 5.</span
-					>
-				</div>
-				<div class="spec-item">
-					<strong>Kretanje</strong><span
-						>Četiri DC motora sa Mecanum točkovima za kretanje u svim pravcima.</span
-					>
-				</div>
-				<div class="spec-item">
-					<strong>Vid</strong><span
-						>RPi Camera Module V2 (8MP) povezana putem MIPI CSI-2 interfejsa.</span
-					>
-				</div>
-				<div class="spec-item">
-					<strong>Učenje kroz rad</strong><span
-						>Sistem je dizajniran za lako testiranje različitih algoritama kretanja.</span
-					>
-				</div>
+				<article class="spec-item">
+					<strong>Napajanje</strong>
+					<span>XL4015 Step-down konverter (5.1V, 5A) za stabilan rad Raspberry Pi 5.</span>
+				</article>
+				<article class="spec-item">
+					<strong>Kretanje</strong>
+					<span>Četiri DC motora sa Mecanum točkovima za kretanje u svim pravcima.</span>
+				</article>
+				<article class="spec-item">
+					<strong>Vid</strong>
+					<span>RPi Camera Module V2 (8MP) povezana putem MIPI CSI-2 interfejsa.</span>
+				</article>
+				<article class="spec-item">
+					<strong>Učenje kroz rad</strong>
+					<span>Sistem je dizajniran za lako testiranje različitih algoritama kretanja.</span>
+				</article>
 			</div>
 		</div>
 	{/if}
@@ -138,13 +184,13 @@
 
 <section id="software-logic" class="section-container">
 	{#if visibleSections.has('software-logic')}
-		<div in:fade={{ duration: 800 }} class="section-header">
+		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Softverska Inteligencija</h2>
 			<p>Optimizacija neuronske mreže za rad u realnom vremenu</p>
-		</div>
+		</header>
 
 		<div class="modern-grid">
-			<div in:fly={{ y: 30, delay: 100 }} class="modern-card no-link">
+			<article in:fly={{ y: 30, delay: 100 }} class="modern-card no-link">
 				<div class="card-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -157,9 +203,9 @@
 						ubrzanje na CPU, čime se postiže visok FPS bez eksternog GPU-a.
 					</p>
 				</div>
-			</div>
+			</article>
 
-			<div in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
+			<article in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
 				<div class="card-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -172,9 +218,9 @@
 						znakove i registarske tablice tokom kretanja.
 					</p>
 				</div>
-			</div>
+			</article>
 
-			<div in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
+			<article in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
 				<div class="card-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -187,31 +233,33 @@
 						motora, sprečavajući kašnjenje u upravljanju.
 					</p>
 				</div>
-			</div>
+			</article>
 		</div>
 	{/if}
 </section>
 
 <section id="projects" class="section-container">
 	{#if visibleSections.has('projects')}
-		<div class="section-header">
+		<header class="section-header">
 			<h2 class="section-title">Modularni Ekosistem</h2>
 			<p>Kompletan izvorni kod dostupan za učenje i modifikaciju</p>
-		</div>
+		</header>
 
 		<div class="modern-grid">
-			{#each projects as project, i}
+			{#each projects as project, i (project.link)}
 				<a
 					href={project.link}
 					target="_blank"
+					rel="noopener noreferrer"
 					class="modern-card-link"
 					in:fly={{ y: 30, delay: i * 100 }}
+					aria-label={`Pogledaj izvorni kod za ${project.title}`}
 				>
-					<div class="modern-card">
+					<article class="modern-card">
 						<div class="card-glow"></div>
 						<div class="card-content">
 							<div class="card-top">
-								<span class="modern-icon">{project.icon}</span>
+								<span class="modern-icon" aria-hidden="true">{project.icon}</span>
 								<span class="tech-pill">{project.tech}</span>
 							</div>
 							<h3>{project.title}</h3>
@@ -228,7 +276,7 @@
 								>
 							</div>
 						</div>
-					</div>
+					</article>
 				</a>
 			{/each}
 		</div>
@@ -237,13 +285,13 @@
 
 <section id="use-cases" class="section-container">
 	{#if visibleSections.has('use-cases')}
-		<div in:fade={{ duration: 800 }} class="section-header">
+		<header in:fade={{ duration: 800 }} class="section-header">
 			<h2 class="section-title">Primarna Namena i Primena</h2>
 			<p>Od edukativne platforme do realnih industrijskih rešenja</p>
-		</div>
+		</header>
 
 		<div class="modern-grid">
-			<div in:fly={{ y: 30, delay: 100 }} class="modern-card no-link featured-card">
+			<article in:fly={{ y: 30, delay: 100 }} class="modern-card no-link featured-card">
 				<div class="card-glow featured-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -256,9 +304,9 @@
 						programiranja i AI treninga, do sistemske administracije na Linux-u i elektronike.
 					</p>
 				</div>
-			</div>
+			</article>
 
-			<div in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
+			<article in:fly={{ y: 30, delay: 200 }} class="modern-card no-link">
 				<div class="card-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -271,9 +319,9 @@
 						realnom vremenu i automatizovano očitavanje parking mesta.
 					</p>
 				</div>
-			</div>
+			</article>
 
-			<div in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
+			<article in:fly={{ y: 30, delay: 300 }} class="modern-card no-link">
 				<div class="card-glow"></div>
 				<div class="card-content">
 					<div class="card-top">
@@ -286,7 +334,7 @@
 						zahtevaju precizno izbegavanje prepreka.
 					</p>
 				</div>
-			</div>
+			</article>
 		</div>
 	{/if}
 </section>
@@ -297,7 +345,6 @@
 </footer>
 
 <style>
-	/* Stilovi ostaju isti kao u tvom originalnom kodu */
 	.section-container {
 		max-width: 1200px;
 		margin: 80px auto;
@@ -372,10 +419,12 @@
 		width: 100%;
 		overflow: hidden;
 		border-radius: 16px;
+		/* Performance: Aspect ratio placeholder */
+		aspect-ratio: 4/3;
 	}
 	.hardware-img {
 		width: 100%;
-		height: auto;
+		height: 100%; /* Changed to 100% to match wrapper */
 		object-fit: contain;
 		display: block;
 		transition: transform 0.5s ease;
