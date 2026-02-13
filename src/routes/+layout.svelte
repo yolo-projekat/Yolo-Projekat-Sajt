@@ -1,20 +1,28 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.png';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	let { children } = $props();
+
+	// Svelte 5 Rune za reaktivno stanje
 	let isMenuOpen = $state(false);
 	let scrolled = $state(false);
 	let theme = $state('dark');
 
+	// Optimizovana funkcija za primenu teme
+	const applyTheme = (newTheme: string) => {
+		theme = newTheme;
+		if (browser) {
+			document.documentElement.setAttribute('data-theme', newTheme);
+			localStorage.setItem('theme', newTheme);
+		}
+	};
+
 	onMount(() => {
+		// Inicijalizacija teme
 		const savedTheme = localStorage.getItem('theme');
 		const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-		const applyTheme = (newTheme: string) => {
-			theme = newTheme;
-			document.documentElement.setAttribute('data-theme', newTheme);
-		};
 
 		if (savedTheme) {
 			applyTheme(savedTheme);
@@ -22,39 +30,57 @@
 			applyTheme(systemPrefersDark.matches ? 'dark' : 'light');
 		}
 
+		// Throttled scroll handle koristeći requestAnimationFrame za 60fps
+		let ticking = false;
 		const handleScroll = () => {
-			window.requestAnimationFrame(() => {
-				scrolled = window.scrollY > 20;
-			});
+			if (!ticking) {
+				window.requestAnimationFrame(() => {
+					scrolled = window.scrollY > 20;
+					ticking = false;
+				});
+				ticking = true;
+			}
 		};
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
-		return () => window.removeEventListener('scroll', handleScroll);
+
+		// Cleanup
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			document.body.style.overflow = '';
+		};
 	});
 
 	function toggleTheme() {
-		const newTheme = theme === 'dark' ? 'light' : 'dark';
-		theme = newTheme;
-		document.documentElement.setAttribute('data-theme', newTheme);
-		localStorage.setItem('theme', newTheme);
+		applyTheme(theme === 'dark' ? 'light' : 'dark');
 	}
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
-		document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+		// Bolja kontrola scroll-lock-a
+		if (browser) {
+			document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+		}
 	}
 
 	function closeMenu() {
-		isMenuOpen = false;
-		document.body.style.overflow = '';
+		if (isMenuOpen) {
+			isMenuOpen = false;
+			document.body.style.overflow = '';
+		}
 	}
 
 	function scrollTo(id: string): void {
 		const el = document.getElementById(id);
 		if (el) {
 			const offset = 90;
+			const bodyRect = document.body.getBoundingClientRect().top;
+			const elementRect = el.getBoundingClientRect().top;
+			const elementPosition = elementRect - bodyRect;
+			const offsetPosition = elementPosition - offset;
+
 			window.scrollTo({
-				top: el.getBoundingClientRect().top + window.scrollY - offset,
+				top: offsetPosition,
 				behavior: 'smooth'
 			});
 		}
@@ -89,7 +115,7 @@
 		<button
 			class="logo"
 			onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-			aria-label="Home"
+			aria-label="Povratak na vrh"
 		>
 			<div class="logo-icon">
 				<div class="logo-ring"></div>
@@ -101,7 +127,11 @@
 			</div>
 		</button>
 
-		<nav class="nav-links" class:open={isMenuOpen}>
+		<nav
+			class="nav-links"
+			class:open={isMenuOpen}
+			aria-hidden={!isMenuOpen && browser && window.innerWidth < 1024}
+		>
 			<ul class="nav-list">
 				<li><button class="nav-item" onclick={() => scrollTo('hardware')}>HARDVER</button></li>
 				<li>
@@ -171,6 +201,7 @@
 		--glass-bg: rgba(255, 255, 255, 0.7);
 		--glass-border: rgba(15, 23, 42, 0.08);
 		--nav-pad: 24px;
+		color-scheme: light;
 	}
 
 	:global(:root[data-theme='dark']) {
@@ -180,6 +211,7 @@
 		--primary: #38bdf8;
 		--glass-bg: rgba(3, 7, 18, 0.7);
 		--glass-border: rgba(255, 255, 255, 0.08);
+		color-scheme: dark;
 	}
 
 	:global(body) {
@@ -189,6 +221,7 @@
 		font-family: 'Plus Jakarta Sans', sans-serif;
 		overflow-x: hidden;
 		transition: background-color 0.4s ease;
+		-webkit-font-smoothing: antialiased;
 	}
 
 	.menu-overlay {
@@ -200,6 +233,16 @@
 		z-index: 998;
 		border: none;
 		cursor: pointer;
+		animation: fadeIn 0.3s ease;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.navbar {
@@ -209,7 +252,11 @@
 		right: 0;
 		z-index: 1000;
 		padding: var(--nav-pad) 0;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		transition:
+			padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			background-color 0.4s ease,
+			backdrop-filter 0.4s ease;
+		will-change: padding, background-color;
 	}
 
 	.navbar.scrolled {
@@ -229,7 +276,6 @@
 		align-items: center;
 	}
 
-	/* Nav links Desktop */
 	.nav-links {
 		display: flex;
 		align-items: center;
@@ -252,8 +298,9 @@
 		font-size: 0.8rem;
 		letter-spacing: 0.5px;
 		cursor: pointer;
-		transition: 0.3s;
+		transition: color 0.3s;
 		position: relative;
+		padding: 8px 0;
 	}
 
 	.nav-item:hover {
@@ -263,18 +310,18 @@
 	.nav-item::after {
 		content: '';
 		position: absolute;
-		bottom: -4px;
+		bottom: 0;
 		left: 0;
 		width: 0;
 		height: 2px;
 		background: var(--primary);
-		transition: width 0.3s;
+		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
+
 	.nav-item:hover::after {
 		width: 100%;
 	}
 
-	/* Actions */
 	.nav-actions {
 		display: flex;
 		align-items: center;
@@ -289,13 +336,14 @@
 		border-radius: 12px;
 		cursor: pointer;
 		display: flex;
-		transition: 0.3s;
+		transition: all 0.3s ease;
 	}
 
 	.theme-toggle:hover {
 		background: var(--primary);
 		color: white;
 		border-color: var(--primary);
+		transform: rotate(15deg);
 	}
 
 	.github-cta {
@@ -306,13 +354,14 @@
 		text-decoration: none;
 		font-weight: 800;
 		font-size: 0.75rem;
-		transition: 0.3s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		border: 1px solid transparent;
 	}
 
 	.github-cta:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 10px 20px -10px var(--primary);
+		filter: brightness(1.1);
 	}
 
 	/* Logo */
@@ -323,7 +372,9 @@
 		display: flex;
 		align-items: center;
 		gap: 14px;
+		padding: 0;
 	}
+
 	.logo-ring {
 		width: 36px;
 		height: 36px;
@@ -332,22 +383,28 @@
 		transform: rotate(45deg);
 		transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
+
 	.logo:hover .logo-ring {
 		transform: rotate(225deg);
 	}
+
 	.logo-main {
 		font-weight: 800;
 		font-size: 1.4rem;
 		color: var(--text-main);
+		display: block;
+		line-height: 1;
 	}
+
 	.logo-sub {
 		color: var(--primary);
 		font-size: 0.65rem;
 		letter-spacing: 3px;
 		font-weight: 700;
+		display: block;
+		margin-top: 4px;
 	}
 
-	/* Hamburger MODERNIZOVAN */
 	.mobile-toggle {
 		display: none;
 		background: var(--glass-bg);
@@ -356,6 +413,7 @@
 		border-radius: 14px;
 		cursor: pointer;
 		z-index: 1001;
+		transition: all 0.3s ease;
 	}
 
 	.hamburger {
@@ -364,7 +422,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		position: relative;
 	}
 
 	.hamburger span {
@@ -396,12 +453,13 @@
 		.mobile-toggle {
 			display: flex;
 		}
+
 		.nav-links {
 			position: fixed;
 			top: 0;
 			right: -100%;
 			width: 100%;
-			max-width: 320px;
+			max-width: 300px;
 			height: 100vh;
 			background: var(--glass-bg);
 			backdrop-filter: blur(30px);
@@ -412,23 +470,30 @@
 			transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 			border-left: 1px solid var(--glass-border);
 			gap: 60px;
+			visibility: hidden;
 		}
+
 		.nav-links.open {
 			right: 0;
+			visibility: visible;
 		}
+
 		.nav-list {
 			flex-direction: column;
 			gap: 40px;
 			align-items: center;
 		}
+
 		.nav-item {
 			font-size: 1.2rem;
 		}
+
 		.nav-actions {
 			flex-direction: column;
 			width: 100%;
 			gap: 20px;
 		}
+
 		.github-cta {
 			width: 100%;
 			text-align: center;

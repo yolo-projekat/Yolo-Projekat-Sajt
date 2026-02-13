@@ -2,7 +2,11 @@
 	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
-	// Svelte 5 Rune: Reaktivno praćenje sekcija
+	// Optimizacija: Import slike kroz @sveltejs/enhanced-img
+	// Slika treba da se nalazi u src/lib/assets/ kako bi Vite mogao da generiše varijacije
+	import hardwareSchema from '$lib/assets/hardverska-sema.avif?enhanced';
+
+	// Svelte 5 Rune: Efikasno praćenje sekcija
 	let visibleSections = $state(new Set<string>());
 
 	onMount(() => {
@@ -12,13 +16,18 @@
 					if (entry.isIntersecting) {
 						visibleSections.add(entry.target.id);
 						visibleSections = new Set(visibleSections);
+						// Performanse: Prestajemo da posmatramo sekciju nakon što se pojavi
+						observer.unobserve(entry.target);
 					}
 				});
 			},
-			{ threshold: 0.15 }
+			{
+				threshold: 0.15,
+				rootMargin: '50px'
+			}
 		);
 
-		document.querySelectorAll('section').forEach((section) => observer.observe(section));
+		document.querySelectorAll('section[id]').forEach((section) => observer.observe(section));
 		return () => observer.disconnect();
 	});
 
@@ -78,7 +87,10 @@
 
 <svelte:head>
 	<title>Autonomno YOLO Vozilo | Danilo Stoletović</title>
-	<meta name="description" content="Edukativna platforma za Edge AI i Raspberry Pi 5." />
+	<meta
+		name="description"
+		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Autonomno kretanje uz YOLOv11 detekciju."
+	/>
 	<script type="application/ld+json">
 		{
 			"@context": "https://schema.org",
@@ -118,15 +130,19 @@
 		<div class="presentation-grid">
 			<div in:fly={{ x: -30, duration: 1000 }} class="image-container">
 				<figure class="img-wrapper">
-					<img
-						src="/hardverska-sema.avif"
-						alt="Hardverska šema"
+					<enhanced:img
+						src={hardwareSchema}
+						alt="Detaljna hardverska šema povezivanja senzora i Raspberry Pi 5 kontrolera"
 						class="hardware-img"
 						loading="lazy"
+						decoding="async"
 					/>
+					<figcaption class="caption">
+						Slika 1: Šema povezivanja RPi 5 i senzorskih modula
+					</figcaption>
 				</figure>
-				<p class="caption">Slika 1: Šema povezivanja RPi 5 i senzorskih modula</p>
 			</div>
+
 			<div in:fly={{ x: 30, duration: 1000 }} class="specs-card">
 				<article class="spec-item">
 					<strong class="text-primary-high">Napajanje</strong>
@@ -155,7 +171,7 @@
 			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">🧠</span>
+						<span class="modern-icon" aria-hidden="true">🧠</span>
 						<span class="tech-pill-high">AI Model</span>
 					</div>
 					<h3>YOLOv11 ONNX</h3>
@@ -165,7 +181,7 @@
 			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">👁️</span>
+						<span class="modern-icon" aria-hidden="true">👁️</span>
 						<span class="tech-pill-high">OCR Engine</span>
 					</div>
 					<h3>Tesseract OCR</h3>
@@ -175,7 +191,7 @@
 			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">⚡</span>
+						<span class="modern-icon" aria-hidden="true">⚡</span>
 						<span class="tech-pill-high">Parallelism</span>
 					</div>
 					<h3>Multithreading</h3>
@@ -197,13 +213,14 @@
 				<a
 					href={project.link}
 					target="_blank"
+					rel="noopener noreferrer"
 					class="modern-card-link"
 					in:fly={{ y: 30, delay: i * 50 }}
 				>
 					<article class="modern-card interactive">
 						<div class="card-content">
 							<div class="card-top">
-								<span class="modern-icon">{project.icon}</span>
+								<span class="modern-icon" aria-hidden="true">{project.icon}</span>
 								<span class="tech-pill-high">{project.tech}</span>
 							</div>
 							<h3>{project.title}</h3>
@@ -227,7 +244,7 @@
 			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive featured-card">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">🎓</span>
+						<span class="modern-icon" aria-hidden="true">🎓</span>
 						<span class="tech-pill-high primary-pill">Glavna Svrha</span>
 					</div>
 					<h3>Edukacija i R&D</h3>
@@ -237,7 +254,7 @@
 			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">🏙️</span>
+						<span class="modern-icon" aria-hidden="true">🏙️</span>
 						<span class="tech-pill-high">Smart City</span>
 					</div>
 					<h3>Gradska Infrastruktura</h3>
@@ -247,7 +264,7 @@
 			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
 				<div class="card-content">
 					<div class="card-top">
-						<span class="modern-icon">🏭</span>
+						<span class="modern-icon" aria-hidden="true">🏭</span>
 						<span class="tech-pill-high">Industry 4.0</span>
 					</div>
 					<h3>Logistika</h3>
@@ -284,7 +301,9 @@
 		max-width: 1200px;
 		margin: 100px auto;
 		padding: 0 24px;
+		contain: layout;
 	}
+
 	.hero {
 		min-height: 80vh;
 		display: flex;
@@ -311,12 +330,14 @@
 		max-width: 800px;
 		margin: 0 auto 40px;
 	}
+
 	.badges {
 		display: flex;
 		gap: 12px;
 		justify-content: center;
 		flex-wrap: wrap;
 	}
+
 	.high-contrast-badge {
 		background: var(--primary-high);
 		color: #fff;
@@ -330,11 +351,13 @@
 		text-align: center;
 		margin-bottom: 60px;
 	}
+
 	.section-title {
 		font-size: clamp(2rem, 5vw, 2.8rem);
 		color: var(--text-main);
 		margin-bottom: 12px;
 	}
+
 	.section-subtitle {
 		color: var(--text-dim-high);
 		font-size: 1.1rem;
@@ -346,6 +369,7 @@
 		gap: 40px;
 		align-items: start;
 	}
+
 	.image-container {
 		background: var(--card-bg-glass);
 		border: 1px solid var(--border);
@@ -355,27 +379,37 @@
 		-webkit-backdrop-filter: blur(10px);
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 	}
+
 	.img-wrapper {
 		border-radius: 16px;
 		overflow: hidden;
-		aspect-ratio: 16/10;
 		margin: 0;
+		background: #f1f5f9;
+		display: flex;
+		flex-direction: column;
 	}
+
 	.hardware-img {
 		width: 100%;
-		height: 100%;
+		height: auto;
+		aspect-ratio: 16/10;
 		object-fit: cover;
 		transition: transform 0.5s ease;
+		will-change: transform;
 	}
+
 	.image-container:hover .hardware-img {
 		transform: scale(1.05);
 	}
+
 	.caption {
-		margin-top: 15px;
+		padding: 15px;
+		background: var(--card-bg-glass);
 		color: var(--text-dim-high);
 		text-align: center;
 		font-size: 0.9rem;
 		font-weight: 600;
+		border-top: 1px solid var(--border);
 	}
 
 	.specs-card {
@@ -386,6 +420,7 @@
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 	}
+
 	.text-primary-high {
 		color: var(--primary-high);
 		font-size: 1.1rem;
@@ -393,23 +428,25 @@
 		margin-bottom: 5px;
 		font-weight: 800;
 	}
+
 	.spec-item p {
 		color: var(--text-dim-high);
 		margin-bottom: 25px;
 		line-height: 1.6;
 	}
 
-	/* UNIFIED CARD STYLES */
 	.modern-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 		gap: 24px;
 	}
+
 	.modern-card-link {
 		text-decoration: none;
 		color: inherit;
 		display: block;
 	}
+
 	.modern-card {
 		background: var(--card-bg-glass);
 		border: 1px solid var(--border);
@@ -420,27 +457,33 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+		will-change: transform;
 	}
+
 	.interactive:hover {
 		transform: translateY(-10px);
 		border-color: var(--primary-high);
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 	}
+
 	.card-content {
 		padding: 32px;
 		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
 	}
+
 	.card-top {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: 20px;
 	}
+
 	.modern-icon {
 		font-size: 1.8rem;
 	}
+
 	.tech-pill-high {
 		background: rgba(2, 119, 189, 0.1);
 		color: var(--primary-high);
@@ -450,25 +493,30 @@
 		font-weight: 800;
 		border: 1px solid rgba(2, 119, 189, 0.2);
 	}
+
 	.primary-pill {
 		background: var(--primary-high) !important;
 		color: white !important;
 	}
+
 	.featured-card {
 		border: 2px solid var(--primary-high);
 	}
+
 	.modern-card h3 {
 		color: var(--text-main);
 		margin: 10px 0;
 		font-size: 1.5rem;
 		font-weight: 700;
 	}
+
 	.modern-card p {
 		color: var(--text-dim-high);
 		line-height: 1.6;
 		font-size: 0.95rem;
 		margin-bottom: 20px;
 	}
+
 	.card-footer-high {
 		margin-top: auto;
 		color: var(--primary-high);
@@ -482,6 +530,7 @@
 		border-top: 1px solid var(--border);
 		color: var(--text-main);
 	}
+
 	@media (max-width: 900px) {
 		.presentation-grid {
 			grid-template-columns: 1fr;
