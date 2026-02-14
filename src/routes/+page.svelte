@@ -2,11 +2,10 @@
 	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
-	// Optimizacija: Import slike kroz @sveltejs/enhanced-img
-	// Slika treba da se nalazi u src/lib/assets/ kako bi Vite mogao da generiše varijacije
+	// Optimization: Import image via @sveltejs/enhanced-img
 	import hardwareSchema from '$lib/assets/hardverska-sema.avif?enhanced';
 
-	// Svelte 5 Rune: Efikasno praćenje sekcija
+	// Svelte 5 Rune: Efficient section tracking
 	let visibleSections = $state(new Set<string>());
 
 	onMount(() => {
@@ -16,7 +15,7 @@
 					if (entry.isIntersecting) {
 						visibleSections.add(entry.target.id);
 						visibleSections = new Set(visibleSections);
-						// Performanse: Prestajemo da posmatramo sekciju nakon što se pojavi
+						// Performance: Stop observing once visible
 						observer.unobserve(entry.target);
 					}
 				});
@@ -112,9 +111,9 @@
 				</p>
 				<div class="badges">
 					<span class="high-contrast-badge">🎓 Edukativni Projekt</span>
-					<span class="high-contrast-badge">🧠 YOLOv11 & OCR</span>
-					<span class="high-contrast-badge">🚀 N1 Autonomija</span>
-					<span class="high-contrast-badge">🏎️ Mecanum Drive</span>
+					<span class="high-badge-outline">🧠 YOLOv11 & OCR</span>
+					<span class="high-badge-outline">🚀 N1 Autonomija</span>
+					<span class="high-badge-outline">🏎️ Mecanum Drive</span>
 				</div>
 			</div>
 		{/if}
@@ -132,10 +131,9 @@
 				<figure class="img-wrapper">
 					<enhanced:img
 						src={hardwareSchema}
-						alt="Detaljna hardverska šema povezivanja senzora i Raspberry Pi 5 kontrolera"
+						alt="Hardware connection schema for Raspberry Pi 5"
 						class="hardware-img"
 						loading="lazy"
-						decoding="async"
 					/>
 					<figcaption class="caption">
 						Slika 1: Šema povezivanja RPi 5 i senzorskih modula
@@ -210,13 +208,7 @@
 		</header>
 		<div class="modern-grid">
 			{#each projects as project, i (project.link)}
-				<a
-					href={project.link}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="modern-card-link"
-					in:fly={{ y: 30, delay: i * 50 }}
-				>
+				<a href={project.link} target="_blank" rel="noopener noreferrer" class="modern-card-link">
 					<article class="modern-card interactive">
 						<div class="card-content">
 							<div class="card-top">
@@ -234,47 +226,6 @@
 	{/if}
 </section>
 
-<section id="use-cases" class="section-container">
-	{#if visibleSections.has('use-cases')}
-		<header in:fade={{ duration: 800 }} class="section-header">
-			<h2 class="section-title">Primarna Namena i Primena</h2>
-			<p class="section-subtitle">Od edukativne platforme do industrijskih rešenja</p>
-		</header>
-		<div class="modern-grid">
-			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive featured-card">
-				<div class="card-content">
-					<div class="card-top">
-						<span class="modern-icon" aria-hidden="true">🎓</span>
-						<span class="tech-pill-high primary-pill">Glavna Svrha</span>
-					</div>
-					<h3>Edukacija i R&D</h3>
-					<p>Baza za učenje savremenih tehnologija: od Python programiranja do elektronike.</p>
-				</div>
-			</article>
-			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
-				<div class="card-content">
-					<div class="card-top">
-						<span class="modern-icon" aria-hidden="true">🏙️</span>
-						<span class="tech-pill-high">Smart City</span>
-					</div>
-					<h3>Gradska Infrastruktura</h3>
-					<p>Primena na pametne raskrsnice za monitoring saobraćaja u realnom vremenu.</p>
-				</div>
-			</article>
-			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
-				<div class="card-content">
-					<div class="card-top">
-						<span class="modern-icon" aria-hidden="true">🏭</span>
-						<span class="tech-pill-high">Industry 4.0</span>
-					</div>
-					<h3>Logistika</h3>
-					<p>Autonomni transportni roboti u magacinima koji zahtevaju precizno kretanje.</p>
-				</div>
-			</article>
-		</div>
-	{/if}
-</section>
-
 <footer>
 	<p>Autor: <strong>Danilo Stoletović</strong> • Mentor: <strong>Dejan Batanjac</strong></p>
 	<p>ETŠ „Nikola Tesla“ Niš • 2026</p>
@@ -282,26 +233,21 @@
 
 <style>
 	:global(:root) {
-		--primary-high: #0277bd;
+		/* Standard WCAG AA contrast adjustments for Light Mode */
+		--primary-high: #01579b;
 		--text-main: #0f172a;
 		--text-dim-high: #334155;
-		--card-bg-glass: rgba(255, 255, 255, 0.7);
-		--border: rgba(15, 23, 42, 0.1);
+		--card-bg-glass: rgba(255, 255, 255, 0.95);
+		--border: rgba(15, 23, 42, 0.15);
 	}
 
 	:global([data-theme='dark']) {
-		--primary-high: #38bdf8;
+		/* Standard WCAG AA contrast adjustments for Dark Mode */
+		--primary-high: #7dd3fc;
 		--text-main: #f8fafc;
 		--text-dim-high: #cbd5e1;
-		--card-bg-glass: rgba(15, 23, 42, 0.6);
+		--card-bg-glass: rgba(15, 23, 42, 0.85);
 		--border: rgba(255, 255, 255, 0.1);
-	}
-
-	.section-container {
-		max-width: 1200px;
-		margin: 100px auto;
-		padding: 0 24px;
-		contain: layout;
 	}
 
 	.hero {
@@ -318,10 +264,12 @@
 		line-height: 1.1;
 		margin-bottom: 24px;
 		background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-high) 100%);
+
+		/* Compatibility: Standard + Webkit */
 		background-clip: text;
 		-webkit-background-clip: text;
-		color: transparent;
 		-webkit-text-fill-color: transparent;
+		color: var(--text-main); /* Fallback */
 	}
 
 	.hero-desc {
@@ -340,11 +288,27 @@
 
 	.high-contrast-badge {
 		background: var(--primary-high);
-		color: #fff;
+		color: #ffffff;
 		padding: 8px 18px;
 		border-radius: 50px;
 		font-size: 0.85rem;
 		font-weight: 700;
+	}
+
+	.high-badge-outline {
+		border: 2px solid var(--primary-high);
+		color: var(--primary-high);
+		padding: 6px 16px;
+		border-radius: 50px;
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+
+	.section-container {
+		max-width: 1200px;
+		margin: 100px auto;
+		padding: 0 24px;
+		contain: layout;
 	}
 
 	.section-header {
@@ -376,8 +340,7 @@
 		border-radius: 24px;
 		padding: 20px;
 		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 	}
 
 	.img-wrapper {
@@ -394,17 +357,10 @@
 		height: auto;
 		aspect-ratio: 16/10;
 		object-fit: cover;
-		transition: transform 0.5s ease;
-		will-change: transform;
-	}
-
-	.image-container:hover .hardware-img {
-		transform: scale(1.05);
 	}
 
 	.caption {
 		padding: 15px;
-		background: var(--card-bg-glass);
 		color: var(--text-dim-high);
 		text-align: center;
 		font-size: 0.9rem;
@@ -418,7 +374,6 @@
 		border-radius: 24px;
 		border: 1px solid var(--border);
 		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
 	}
 
 	.text-primary-high {
@@ -452,18 +407,16 @@
 		border: 1px solid var(--border);
 		border-radius: 24px;
 		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		will-change: transform;
 	}
 
 	.interactive:hover {
 		transform: translateY(-10px);
 		border-color: var(--primary-high);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 	}
 
 	.card-content {
@@ -485,22 +438,13 @@
 	}
 
 	.tech-pill-high {
-		background: rgba(2, 119, 189, 0.1);
+		background: rgba(1, 87, 155, 0.1);
 		color: var(--primary-high);
 		padding: 6px 14px;
 		border-radius: 8px;
 		font-size: 0.75rem;
 		font-weight: 800;
-		border: 1px solid rgba(2, 119, 189, 0.2);
-	}
-
-	.primary-pill {
-		background: var(--primary-high) !important;
-		color: white !important;
-	}
-
-	.featured-card {
-		border: 2px solid var(--primary-high);
+		border: 1.5px solid var(--primary-high);
 	}
 
 	.modern-card h3 {
