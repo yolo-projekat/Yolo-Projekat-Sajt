@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
-
 	// Optimization: Import image via @sveltejs/enhanced-img
 	import hardwareSchema from '$lib/assets/hardverska-sema.avif?enhanced';
 
@@ -15,7 +14,7 @@
 					if (entry.isIntersecting) {
 						visibleSections.add(entry.target.id);
 						visibleSections = new Set(visibleSections);
-						// Performance: Stop observing once visible
+						// Performance optimization: Stop observing once element is seen
 						observer.unobserve(entry.target);
 					}
 				});
@@ -88,21 +87,33 @@
 	<title>Autonomno YOLO Vozilo | Danilo Stoletović</title>
 	<meta
 		name="description"
-		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Autonomno kretanje uz YOLOv11 detekciju."
+		content="Edukativna platforma za Edge AI i Raspberry Pi 5. Autonomno kretanje uz YOLOv11 detekciju i Tesseract OCR."
 	/>
+	<meta
+		name="keywords"
+		content="YOLOv11, Raspberry Pi 5, Edge AI, Robotika, Svelte, Autonomna vozila"
+	/>
+
 	<script type="application/ld+json">
 		{
 			"@context": "https://schema.org",
 			"@type": "SoftwareSourceCode",
 			"name": "Autonomno YOLO Vozilo",
 			"author": { "@type": "Person", "name": "Danilo Stoletović" },
-			"programmingLanguage": ["Python", "C#", "Kotlin", "TypeScript"]
+			"description": "AI-powered robot vehicle using YOLOv11 for object detection.",
+			"programmingLanguage": ["Python", "C#", "Kotlin", "TypeScript"],
+			"codeRepository": "https://github.com/yolo-projekat"
 		}
 	</script>
 </svelte:head>
 
 <section id="hero" class="hero">
 	<div class="hero-content">
+		<div class="logo-container" aria-hidden="true">
+			<span class="logo-main">YOLO</span>
+			<span class="logo-sub">PROJEKAT</span>
+		</div>
+
 		<h1 class="gradient-text">AUTONOMNO YOLO VOZILO</h1>
 		{#if visibleSections.has('hero')}
 			<div in:fade={{ delay: 100, duration: 800 }}>
@@ -131,7 +142,7 @@
 				<figure class="img-wrapper">
 					<enhanced:img
 						src={hardwareSchema}
-						alt="Hardware connection schema for Raspberry Pi 5"
+						alt="Šema povezivanja Raspberry Pi 5, motora i senzora"
 						class="hardware-img"
 						loading="lazy"
 					/>
@@ -173,7 +184,9 @@
 						<span class="tech-pill-high">AI Model</span>
 					</div>
 					<h3>YOLOv11 ONNX</h3>
-					<p>Visok FPS na CPU korišćenjem ONNX optimizacija bez eksternog GPU-a.</p>
+					<p>
+						Visok FPS na CPU korišćenjem ONNX optimizacija bez potrebe za eksternim akceleratorom.
+					</p>
 				</div>
 			</article>
 			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
@@ -183,7 +196,7 @@
 						<span class="tech-pill-high">OCR Engine</span>
 					</div>
 					<h3>Tesseract OCR</h3>
-					<p>Ekstrakcija teksta i saobraćajnih znakova u realnom vremenu.</p>
+					<p>Detekcija i ekstrakcija teksta sa tablica i saobraćajnih znakova u milisekundama.</p>
 				</div>
 			</article>
 			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
@@ -193,7 +206,7 @@
 						<span class="tech-pill-high">Parallelism</span>
 					</div>
 					<h3>Multithreading</h3>
-					<p>Paralelna obrada akvizicije slike, inferencije i logike kontrole motora.</p>
+					<p>Paralelna obrada akvizicije slike, AI inferencije i PWM kontrole motora.</p>
 				</div>
 			</article>
 		</div>
@@ -204,11 +217,17 @@
 	{#if visibleSections.has('projects')}
 		<header class="section-header">
 			<h2 class="section-title">Modularni Ekosistem</h2>
-			<p class="section-subtitle">Kompletan izvorni kod dostupan za učenje</p>
+			<p class="section-subtitle">Kompletan izvorni kod dostupan na GitHub-u</p>
 		</header>
 		<div class="modern-grid">
-			{#each projects as project, i (project.link)}
-				<a href={project.link} target="_blank" rel="noopener noreferrer" class="modern-card-link">
+			{#each projects as project (project.link)}
+				<a
+					href={project.link}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="modern-card-link"
+					aria-label="Github link za {project.title}"
+				>
 					<article class="modern-card interactive">
 						<div class="card-content">
 							<div class="card-top">
@@ -229,8 +248,8 @@
 <section id="use-cases" class="section-container">
 	{#if visibleSections.has('use-cases')}
 		<header in:fade={{ duration: 800 }} class="section-header">
-			<h2 class="section-title">Primena</h2>
-			<p class="section-subtitle">Od edukativne platforme do industrijskih rešenja</p>
+			<h2 class="section-title">Primena Projekta</h2>
+			<p class="section-subtitle">Od edukativne platforme do industrijskih prototipova</p>
 		</header>
 		<div class="modern-grid">
 			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive featured-card">
@@ -240,7 +259,7 @@
 						<span class="tech-pill-high primary-pill">Glavna Svrha</span>
 					</div>
 					<h3>Edukacija i R&D</h3>
-					<p>Baza za učenje savremenih tehnologija: od Python programiranja do elektronike.</p>
+					<p>Idealna baza za učenje Edge AI-a, Linux sistema i Python programiranja na hardveru.</p>
 				</div>
 			</article>
 			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
@@ -249,8 +268,11 @@
 						<span class="modern-icon" aria-hidden="true">🏙️</span>
 						<span class="tech-pill-high">Smart City</span>
 					</div>
-					<h3>Gradska Infrastruktura</h3>
-					<p>Primena na pametne raskrsnice za monitoring saobraćaja u realnom vremenu.</p>
+					<h3>Monitoring Saobraćaja</h3>
+					<p>
+						Primena YOLO detekcije za brojanje vozila i analizu frekvencije saobraćaja u realnom
+						vremenu.
+					</p>
 				</div>
 			</article>
 			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
@@ -259,8 +281,8 @@
 						<span class="modern-icon" aria-hidden="true">🏭</span>
 						<span class="tech-pill-high">Industry 4.0</span>
 					</div>
-					<h3>Logistika</h3>
-					<p>Autonomni transportni roboti u magacinima koji zahtevaju precizno kretanje.</p>
+					<h3>AGV Logistika</h3>
+					<p>Prototip za autonomne transportere u magacinima koji prate vizuelne oznake.</p>
 				</div>
 			</article>
 		</div>
@@ -274,21 +296,49 @@
 
 <style>
 	:global(:root) {
-		/* Standard WCAG AA contrast adjustments for Light Mode */
-		--primary-high: #01579b;
+		/* Accessibility: High contrast colors for WCAG AA compliance */
+		--primary-high: #004d87;
 		--text-main: #0f172a;
 		--text-dim-high: #334155;
 		--card-bg-glass: rgba(255, 255, 255, 0.95);
 		--border: rgba(15, 23, 42, 0.15);
+		--bg-app: #ffffff;
 	}
 
 	:global([data-theme='dark']) {
-		/* Standard WCAG AA contrast adjustments for Dark Mode */
 		--primary-high: #7dd3fc;
 		--text-main: #f8fafc;
 		--text-dim-high: #cbd5e1;
 		--card-bg-glass: rgba(15, 23, 42, 0.85);
 		--border: rgba(255, 255, 255, 0.1);
+		--bg-app: #0f172a;
+	}
+
+	/* FIXED LOGO CONTRAST (Accessibility fix for oooo3.png report) */
+	.logo-container {
+		margin-bottom: 2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.logo-main {
+		font-size: 3rem;
+		font-weight: 800;
+		color: var(--text-main);
+		letter-spacing: -1px;
+		line-height: 1;
+	}
+
+	.logo-sub {
+		background-color: #1e293b; /* Dark bg for white text contrast */
+		color: #ffffff;
+		padding: 2px 10px;
+		font-weight: 900;
+		letter-spacing: 2.5px;
+		font-size: 0.85rem;
+		border-radius: 4px;
+		margin-top: 5px;
 	}
 
 	.hero {
@@ -305,12 +355,10 @@
 		line-height: 1.1;
 		margin-bottom: 24px;
 		background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-high) 100%);
-
-		/* Compatibility: Standard + Webkit */
 		background-clip: text;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		color: var(--text-main); /* Fallback */
+		color: var(--text-main);
 	}
 
 	.hero-desc {
@@ -347,7 +395,7 @@
 
 	.section-container {
 		max-width: 1200px;
-		margin: 100px auto;
+		margin: 120px auto;
 		padding: 0 24px;
 		contain: layout;
 	}
@@ -361,6 +409,7 @@
 		font-size: clamp(2rem, 5vw, 2.8rem);
 		color: var(--text-main);
 		margin-bottom: 12px;
+		font-weight: 800;
 	}
 
 	.section-subtitle {
@@ -419,7 +468,7 @@
 
 	.text-primary-high {
 		color: var(--primary-high);
-		font-size: 1.1rem;
+		font-size: 1.15rem;
 		display: block;
 		margin-bottom: 5px;
 		font-weight: 800;
@@ -448,16 +497,16 @@
 		border: 1px solid var(--border);
 		border-radius: 24px;
 		backdrop-filter: blur(12px);
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
 
 	.interactive:hover {
-		transform: translateY(-10px);
+		transform: translateY(-8px);
 		border-color: var(--primary-high);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 	}
 
 	.card-content {
@@ -479,7 +528,7 @@
 	}
 
 	.tech-pill-high {
-		background: rgba(1, 87, 155, 0.1);
+		background: rgba(1, 87, 155, 0.05);
 		color: var(--primary-high);
 		padding: 6px 14px;
 		border-radius: 8px;
@@ -490,7 +539,7 @@
 
 	.primary-pill {
 		background: var(--primary-high) !important;
-		color: white !important;
+		color: #ffffff !important;
 		border: none !important;
 	}
 
@@ -501,7 +550,7 @@
 	.modern-card h3 {
 		color: var(--text-main);
 		margin: 10px 0;
-		font-size: 1.5rem;
+		font-size: 1.4rem;
 		font-weight: 700;
 	}
 
@@ -520,15 +569,20 @@
 	}
 
 	footer {
-		padding: 80px 24px;
+		padding: 100px 24px;
 		text-align: center;
 		border-top: 1px solid var(--border);
 		color: var(--text-main);
+		font-size: 1rem;
 	}
 
 	@media (max-width: 900px) {
 		.presentation-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.section-container {
+			margin: 80px auto;
 		}
 	}
 </style>

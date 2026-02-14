@@ -5,12 +5,11 @@
 
 	let { children } = $props();
 
-	// Svelte 5 Rune za reaktivno stanje
+	// Svelte 5 State
 	let isMenuOpen = $state(false);
 	let scrolled = $state(false);
 	let theme = $state('dark');
 
-	// Optimizovana funkcija za primenu teme
 	const applyTheme = (newTheme: string) => {
 		theme = newTheme;
 		if (browser) {
@@ -20,17 +19,9 @@
 	};
 
 	onMount(() => {
-		// Inicijalizacija teme
-		const savedTheme = localStorage.getItem('theme');
-		const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+		// Sync theme state with attribute set by the head script
+		theme = document.documentElement.getAttribute('data-theme') || 'dark';
 
-		if (savedTheme) {
-			applyTheme(savedTheme);
-		} else {
-			applyTheme(systemPrefersDark.matches ? 'dark' : 'light');
-		}
-
-		// Throttled scroll handle koristeći requestAnimationFrame za 60fps
 		let ticking = false;
 		const handleScroll = () => {
 			if (!ticking) {
@@ -43,11 +34,9 @@
 		};
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
-
-		// Cleanup
 		return () => {
 			window.removeEventListener('scroll', handleScroll);
-			document.body.style.overflow = '';
+			if (browser) document.body.style.overflow = '';
 		};
 	});
 
@@ -57,7 +46,6 @@
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
-		// Bolja kontrola scroll-lock-a
 		if (browser) {
 			document.body.style.overflow = isMenuOpen ? 'hidden' : '';
 		}
@@ -73,14 +61,8 @@
 	function scrollTo(id: string): void {
 		const el = document.getElementById(id);
 		if (el) {
-			const offset = 90;
-			const bodyRect = document.body.getBoundingClientRect().top;
-			const elementRect = el.getBoundingClientRect().top;
-			const elementPosition = elementRect - bodyRect;
-			const offsetPosition = elementPosition - offset;
-
 			window.scrollTo({
-				top: offsetPosition,
+				top: el.offsetTop - 90,
 				behavior: 'smooth'
 			});
 		}
@@ -90,7 +72,10 @@
 
 <svelte:head>
 	<title>YOLO Projekat | Autonomno AI Vozilo</title>
-	<meta name="description" content="Edukativna platforma za Edge AI na Raspberry Pi 5." />
+	<meta
+		name="description"
+		content="Edukativna platforma za razvoj Edge AI rešenja na Raspberry Pi 5 platformi."
+	/>
 	<link rel="icon" type="image/png" href={favicon} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -98,6 +83,14 @@
 		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
 		rel="stylesheet"
 	/>
+
+	<script>
+		(function () {
+			const saved = localStorage.getItem('theme');
+			const pref = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			document.documentElement.setAttribute('data-theme', saved || pref);
+		})();
+	</script>
 </svelte:head>
 
 {#if isMenuOpen}
@@ -106,8 +99,7 @@
 		onclick={closeMenu}
 		onkeydown={(e) => e.key === 'Escape' && closeMenu()}
 		aria-label="Zatvori meni"
-	>
-	</button>
+	></button>
 {/if}
 
 <header class="navbar" class:scrolled>
@@ -130,6 +122,7 @@
 		<nav
 			class="nav-links"
 			class:open={isMenuOpen}
+			id="main-nav"
 			aria-hidden={!isMenuOpen && browser && window.innerWidth < 1024}
 		>
 			<ul class="nav-list">
@@ -152,10 +145,18 @@
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-							><circle cx="12" cy="12" r="5" /><path
-								d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-							/></svg
+							stroke-linejoin="round"
 						>
+							<circle cx="12" cy="12" r="5" />
+							<line x1="12" y1="1" x2="12" y2="3" />
+							<line x1="12" y1="21" x2="12" y2="23" />
+							<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+							<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+							<line x1="1" y1="12" x2="3" y2="12" />
+							<line x1="21" y1="12" x2="23" y2="12" />
+							<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+							<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+						</svg>
 					{:else}
 						<svg
 							width="20"
@@ -165,8 +166,10 @@
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-							><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg
+							stroke-linejoin="round"
 						>
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+						</svg>
 					{/if}
 				</button>
 				<a
@@ -178,7 +181,13 @@
 			</div>
 		</nav>
 
-		<button class="mobile-toggle" onclick={toggleMenu} aria-label="Meni" aria-expanded={isMenuOpen}>
+		<button
+			class="mobile-toggle"
+			onclick={toggleMenu}
+			aria-label="Meni"
+			aria-expanded={isMenuOpen}
+			aria-controls="main-nav"
+		>
 			<div class="hamburger" class:active={isMenuOpen}>
 				<span class="line-top"></span>
 				<span class="line-mid"></span>
@@ -196,9 +205,9 @@
 	:global(:root) {
 		--bg: #fdfdfe;
 		--text-main: #0f172a;
-		--text-dim: #64748b;
-		--primary: #0284c7;
-		--glass-bg: rgba(255, 255, 255, 0.7);
+		--text-dim: #475569;
+		--primary: #0271ad; /* Improved contrast for Light Mode */
+		--glass-bg: rgba(255, 255, 255, 0.75);
 		--glass-border: rgba(15, 23, 42, 0.08);
 		--nav-pad: 24px;
 		color-scheme: light;
@@ -209,7 +218,7 @@
 		--text-main: #f8fafc;
 		--text-dim: #94a3b8;
 		--primary: #38bdf8;
-		--glass-bg: rgba(3, 7, 18, 0.7);
+		--glass-bg: rgba(3, 7, 18, 0.75);
 		--glass-border: rgba(255, 255, 255, 0.08);
 		color-scheme: dark;
 	}
@@ -224,25 +233,9 @@
 		-webkit-font-smoothing: antialiased;
 	}
 
-	.menu-overlay {
-		position: fixed;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.3);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		z-index: 998;
-		border: none;
-		cursor: pointer;
-		animation: fadeIn 0.3s ease;
-	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+	/* Ensures smooth scrolling to sections with header offset */
+	:global(section) {
+		scroll-margin-top: 100px;
 	}
 
 	.navbar {
@@ -252,10 +245,7 @@
 		right: 0;
 		z-index: 1000;
 		padding: var(--nav-pad) 0;
-		transition:
-			padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-			background-color 0.4s ease,
-			backdrop-filter 0.4s ease;
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		will-change: padding, background-color;
 	}
 
@@ -315,7 +305,7 @@
 		width: 0;
 		height: 2px;
 		background: var(--primary);
-		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: width 0.3s ease;
 	}
 
 	.nav-item:hover::after {
@@ -342,7 +332,6 @@
 	.theme-toggle:hover {
 		background: var(--primary);
 		color: white;
-		border-color: var(--primary);
 		transform: rotate(15deg);
 	}
 
@@ -354,17 +343,14 @@
 		text-decoration: none;
 		font-weight: 800;
 		font-size: 0.75rem;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		border: 1px solid transparent;
+		transition: all 0.3s ease;
 	}
 
 	.github-cta:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 10px 20px -10px var(--primary);
-		filter: brightness(1.1);
 	}
 
-	/* Logo */
 	.logo {
 		background: none;
 		border: none;
@@ -400,7 +386,7 @@
 		color: var(--primary);
 		font-size: 0.65rem;
 		letter-spacing: 3px;
-		font-weight: 700;
+		font-weight: 800;
 		display: block;
 		margin-top: 4px;
 	}
@@ -413,7 +399,6 @@
 		border-radius: 14px;
 		cursor: pointer;
 		z-index: 1001;
-		transition: all 0.3s ease;
 	}
 
 	.hamburger {
@@ -433,11 +418,6 @@
 		transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 	}
 
-	.hamburger .line-mid {
-		width: 75%;
-		align-self: flex-end;
-	}
-
 	.hamburger.active .line-top {
 		transform: translateY(8.5px) rotate(45deg);
 	}
@@ -449,11 +429,20 @@
 		transform: translateY(-8.5px) rotate(-45deg);
 	}
 
+	.menu-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(8px);
+		z-index: 998;
+		border: none;
+		cursor: pointer;
+	}
+
 	@media (max-width: 1024px) {
 		.mobile-toggle {
 			display: flex;
 		}
-
 		.nav-links {
 			position: fixed;
 			top: 0;
@@ -461,43 +450,27 @@
 			width: 100%;
 			max-width: 300px;
 			height: 100vh;
-			background: var(--glass-bg);
-			backdrop-filter: blur(30px);
-			-webkit-backdrop-filter: blur(30px);
+			background: var(--bg);
 			flex-direction: column;
 			justify-content: center;
 			padding: 40px;
-			transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+			transition: right 0.5s ease;
 			border-left: 1px solid var(--glass-border);
-			gap: 60px;
 			visibility: hidden;
 		}
-
 		.nav-links.open {
 			right: 0;
 			visibility: visible;
 		}
-
 		.nav-list {
 			flex-direction: column;
 			gap: 40px;
 			align-items: center;
 		}
-
-		.nav-item {
-			font-size: 1.2rem;
-		}
-
 		.nav-actions {
 			flex-direction: column;
 			width: 100%;
 			gap: 20px;
-		}
-
-		.github-cta {
-			width: 100%;
-			text-align: center;
-			padding: 16px;
 		}
 	}
 </style>
