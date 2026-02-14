@@ -226,6 +226,47 @@
 	{/if}
 </section>
 
+<section id="use-cases" class="section-container">
+	{#if visibleSections.has('use-cases')}
+		<header in:fade={{ duration: 800 }} class="section-header">
+			<h2 class="section-title">Primena</h2>
+			<p class="section-subtitle">Od edukativne platforme do industrijskih rešenja</p>
+		</header>
+		<div class="modern-grid">
+			<article in:fly={{ y: 30, delay: 100 }} class="modern-card interactive featured-card">
+				<div class="card-content">
+					<div class="card-top">
+						<span class="modern-icon" aria-hidden="true">🎓</span>
+						<span class="tech-pill-high primary-pill">Glavna Svrha</span>
+					</div>
+					<h3>Edukacija i R&D</h3>
+					<p>Baza za učenje savremenih tehnologija: od Python programiranja do elektronike.</p>
+				</div>
+			</article>
+			<article in:fly={{ y: 30, delay: 200 }} class="modern-card interactive">
+				<div class="card-content">
+					<div class="card-top">
+						<span class="modern-icon" aria-hidden="true">🏙️</span>
+						<span class="tech-pill-high">Smart City</span>
+					</div>
+					<h3>Gradska Infrastruktura</h3>
+					<p>Primena na pametne raskrsnice za monitoring saobraćaja u realnom vremenu.</p>
+				</div>
+			</article>
+			<article in:fly={{ y: 30, delay: 300 }} class="modern-card interactive">
+				<div class="card-content">
+					<div class="card-top">
+						<span class="modern-icon" aria-hidden="true">🏭</span>
+						<span class="tech-pill-high">Industry 4.0</span>
+					</div>
+					<h3>Logistika</h3>
+					<p>Autonomni transportni roboti u magacinima koji zahtevaju precizno kretanje.</p>
+				</div>
+			</article>
+		</div>
+	{/if}
+</section>
+
 <footer>
 	<p>Autor: <strong>Danilo Stoletović</strong> • Mentor: <strong>Dejan Batanjac</strong></p>
 	<p>ETŠ „Nikola Tesla“ Niš • 2026</p>
@@ -445,6 +486,16 @@
 		font-size: 0.75rem;
 		font-weight: 800;
 		border: 1.5px solid var(--primary-high);
+	}
+
+	.primary-pill {
+		background: var(--primary-high) !important;
+		color: white !important;
+		border: none !important;
+	}
+
+	.featured-card {
+		border: 2px solid var(--primary-high);
 	}
 
 	.modern-card h3 {
