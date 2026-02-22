@@ -1,36 +1,43 @@
 <div align="center">
 
-# 🌐 YOLO Projekat - Veb Sajt
-### *SvelteKit Hub za Dokumentaciju i Ekosistem*
+# 🗄️ [ARHIVIRANO] YOLO Projekat - Veb Sajt
+### *Istorijski SvelteKit Hub za Dokumentaciju*
 
-[![SvelteKit](https://img.shields.io/badge/SvelteKit-2.0-ff3e00?style=for-the-badge&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.0-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-22d3ee?style=for-the-badge&logo=github&logoColor=white)](https://pages.github.com/)
+> [!WARNING]  
+> **STATUS REPOZITORIJUMA: ARHIVIRAN (DEPRECATED)**
+> 
+> Ovaj repozitorijum sadrži prvobitnu SvelteKit verziju sajta za YOLO Projekat i više se ne održava. Projekat je migriran na čistu **Vanilla HTML/CSS/JS** arhitekturu.
+>
+> **Inženjersko objašnjenje tranzicije:** Nakon tehničke revizije, zaključeno je da upotreba SvelteKit-a za jednostranični, statički prezentacioni sajt predstavlja klasičan **overengineering**. Iako Svelte nudi odličan *Developer Experience* (DX), uvođenje Node.js zavisnosti, procesa build-ovanja fajlova i klijentske JS hidratacije je potpuno nepotrebno za ovaj nivo kompleksnosti. 
+> 
+> **Trade-offs (Kompromisi):** Odbacili smo Svelte komponente i automatsku optimizaciju slika u korist **sirovih performansi i apsolutne prenosivosti**. Nova Vanilla implementacija ima skoro trenutni *Time to Interactive (TTI)*, nema *framework overhead*-a i može se pokrenuti lokalno jednostavnim otvaranjem `index.html` fajla u browseru ($O(1)$ kompleksnost pokretanja). Ovo značajno olakšava buduće održavanje i distribuciju platforme u edukativne svrhe.
+
+[![SvelteKit](https://img.shields.io/badge/SvelteKit-2.0-ff3e00?style=for-the-badge&logo=svelte&logoColor=white&color=gray)](https://kit.svelte.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript&logoColor=white&color=gray)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.0-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white&color=gray)](https://tailwindcss.com/)
 
 ---
 
 <p align="center">
-  <b>Zvanična prezentacija YOLO Projekta</b> služi kao centralno, interaktivno mesto za tehničku dokumentaciju. 
-  <br>Sajt objedinjuje specifikacije za Windows, Android i Python klijente, pružajući uvid u <b>N1 stepen autonomije</b> vozila.
+  <i>Istorijska arhiva: Zvanična prezentacija YOLO Projekta koja je služila kao centralno mesto za tehničku dokumentaciju pre prelaska na Vanilla arhitekturu.</i>
 </p>
 
 </div>
 
-## 🧩 SvelteKit Snaga & Performanse
+## 🧩 Originalna SvelteKit Arhitektura (Istorija)
 
-Ovaj projekat koristi prednosti moderne web arhitekture kako bi osigurao munjevito učitavanje i besprekorno korisničko iskustvo:
+Ovaj projekat je prvobitno koristio moderne web tehnologije kako bi osigurao brzo učitavanje, ali uz kompleksniji proces razvoja:
 
-* **Static Site Generation (SSG):** Optimizovano za maksimalne performanse i SEO, omogućavajući trenutno učitavanje dokumentacije.
-* **Component-Based Architecture:** Modularni Svelte dizajn koji omogućava lako proširivanje tehničkih specifikacija.
-* **Modern Styling:** Tailwind CSS implementacija sa fokusom na "Glassmorphism" vizuelni identitet celokupnog ekosistema.
-* **Automated CI/CD:** Integrisan GitHub Actions pipeline koji automatski ažurira produkcionu verziju sajta.
+* **Static Site Generation (SSG):** Optimizovano za performanse i SEO, ali je zahtevalo Node.js *build step*.
+* **Component-Based Architecture:** Modularni Svelte dizajn koji je nudio dobru organizaciju koda, ali nepotreban *overhead* za jednu stranicu.
+* **Modern Styling:** Tailwind CSS implementacija sa fokusom na "Glassmorphism" vizuelni identitet.
+* **Automated CI/CD:** Integrisan GitHub Actions pipeline koji je automatski ažurirao produkcionu verziju sajta.
 
 ---
 
 ## 🚀 Pregled Ekosistema
 
-Sajt služi kao baza za sve podsisteme YOLO projekta:
+Sajt i dalje služi kao baza za podsisteme YOLO projekta (razvoj mobilnih i desktop klijenata ostaje aktivan u odvojenim repozitorijumima):
 
 ### 📱 Android Aplikacija
 * **Jetpack Compose:** Deklarativni UI za intuitivnu mobilnu kontrolu.
@@ -42,24 +49,15 @@ Sajt služi kao baza za sve podsisteme YOLO projekta:
 
 ---
 
-## 🛠 Tehnološki Stack
+## 🛠 Stari Tehnološki Stack
 
-| Komponenta | Tehnologija | Uloga |
+| Komponenta | Tehnologija | Uloga u ovoj verziji (Sada napušteno) |
 | :--- | :--- | :--- |
 | **Frontend** | **SvelteKit** | Visokoperformansni SSG Framework |
 | **Styling** | **Tailwind CSS** | Moderni vizuelni identitet i Layout |
-| **Deployment** | **GitHub Actions** | Automatizovan CI/CD pipeline |
+| **Deployment** | **GitHub Actions** | Automatizovan CI/CD pipeline za SSG |
 | **Icons** | **Lucide Svelte** | Vektorski simboli i UI indikatori |
 | **Hardware** | **Raspberry Pi 5** | Glavna procesorska jedinica vozila |
-
----
-
-## 🌐 Cloud Deployment
-
-Sajt koristi **GitHub Pages** za hosting. Svaki put kada se kôd pošalje na `main` granu, pokreće se sledeći proces:
-
-1. **Build:** SvelteKit generiše optimizovane statičke fajlove.
-2. **Deploy:** GitHub Actions automatski ažurira produkcionu verziju sajta na internetu.
 
 ---
 
